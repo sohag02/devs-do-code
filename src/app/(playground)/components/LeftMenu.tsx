@@ -5,7 +5,6 @@ import {
   Image,
   Users,
   Wrench,
-  User,
   Instagram,
   Twitter,
   MessageCircle,
@@ -22,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useSettings } from '../context/SettingsContext';
+import UserCard from './UserCard';
 
 interface LeftMenuProps {
   isOpen: boolean;
@@ -35,7 +35,7 @@ interface Personality {
   id: string;
   name: string;
   description: string;
-  icon: JSX.Element;
+  icon: React.ReactElement;
   tag: string;
 }
 
@@ -186,7 +186,7 @@ export function LeftMenu({
           {menuItems.map((item, index) => (
             <div key={index}>
               <button
-                className={`w-full h-10 flex items-center ${
+                className={`relative w-full h-10 flex items-center ${
                   !isOpen ? 'justify-center' : 'px-3'
                 } ${hoverBg} transition-colors ${
                   item.label === 'Tools' && shake ? 'animate-shake' : ''
@@ -266,24 +266,28 @@ export function LeftMenu({
           <div
             className={`flex items-center ${isOpen ? 'justify-between' : 'justify-center'}`}
           >
-            <User className={`w-7 h-7 ${iconColor} shrink-0`} />
-            {isOpen && (
-              <div className="flex gap-2 ml-auto">
-                {socialIcons.map((social, index) => (
-                  <a
-                    key={index}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`${iconColor} ${iconHoverColor} transition-colors`}
-                  >
-                    <social.icon className="w-4 h-4" />
-                  </a>
-                ))}
-              </div>
-            )}
+            <UserCard isOpen={isOpen} />
           </div>
         </div>
+        
+        <div className={`p-3 border-t ${borderColor}`}>
+          {isOpen && (
+            <div className="flex gap-2 ml-auto">
+              {socialIcons.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${iconColor} ${iconHoverColor} transition-colors`}
+                >
+                  <social.icon className="w-4 h-4" />
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+
       </div>
 
       {/* Unavailable message */}
