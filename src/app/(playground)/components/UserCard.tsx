@@ -22,7 +22,7 @@ function User({ isOpen }: UserCardProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   if (!session) {
-    return <div>Login</div>;
+    return null;
   }
 
   return (
