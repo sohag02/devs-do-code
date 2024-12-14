@@ -58,7 +58,7 @@ export function RightMenu({ isOpen, onMouseEnter, onMouseLeave }: RightMenuProps
   return (
     <div
       className={`fixed right-0 top-0 h-full ${bgColor} z-10 transition-[width] duration-300 ease-in-out custom-scrollbar
-            ${isOpen ? 'w-80' : 'w-14'} flex flex-col`}
+            ${isOpen ? 'w-96' : 'w-14'} flex flex-col`}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
