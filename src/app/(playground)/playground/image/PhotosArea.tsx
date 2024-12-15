@@ -32,118 +32,27 @@ interface Model {
 }
 
 interface PhotosAreaProps {
-  leftMenuOpen: boolean;
-  rightMenuOpen: boolean;
+  images: ImageResponse[];
+  models: Model[];
 }
 
-export function PhotosArea({ leftMenuOpen, rightMenuOpen }: PhotosAreaProps) {
-  const [images, setImages] = useState<ImageResponse[]>([]);
+export function PhotosArea( { images, models }: PhotosAreaProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [prompt, setPrompt] = useState("");
-  const [models, setModels] = useState<Model[]>([]);
   const [selectedModel, setSelectedModel] = useState("flux");
   const [width, setWidth] = useState<number | null>(null);
   const [height, setHeight] = useState<number | null>(null);
 
-  useEffect(() => {
-    const fetchModels = async () => {
-      try {
-        const response = await fetch("https://image.pollinations.ai/models");
-        const data = await response.json();
-        const models = data.map((model: string) => ({
-          id: model,
-          label: model.charAt(0).toUpperCase() + model.slice(1),
-        }));
-        setModels(models);
-      } catch (error) {
-        console.error("Error fetching models:", error);
-      }
-    };
-
-    fetchModels();
-  }, []);
-
-  useEffect(() => {
-    const abortController = new AbortController();
-    const fetchImages = async () => {
-      try {
-        const response = await fetch("https://image.pollinations.ai/feed", {
-          signal: abortController.signal,
-        });
-        const reader = response.body?.getReader();
-
-        if (!reader) {
-          console.error("Failed to read the stream.");
-          return;
-        }
-
-        const decoder = new TextDecoder("utf-8");
-        let buffer = "";
-
-        while (images.length < 10) {
-          try {
-            const { value, done } = await reader.read();
-
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-
-            const lines = buffer.split("\n");
-
-            buffer = lines.pop() || "";
-
-            for (const line of lines) {
-              if (line.startsWith("data:")) {
-                try {
-                  const json = JSON.parse(line.replace("data: ", "").trim());
-                  if (json.imageURL && !json.imageURL.includes('nsfw=true') && json.nsfw !== true) {
-                    setImages((prevImages) => {
-                      const image = {
-                        url: json.imageURL,
-                        width: json.width,
-                        height: json.height,
-                        prompt: json.originalPrompt,
-                        model: json.model,
-                      };
-                      // if (!images.includes(image)) {
-                      const updatedImages = [ ...prevImages, image].slice(0, 10);
-                      return updatedImages;
-                      // }
-                    });
-                  }
-                } catch (err) {
-                  console.error("Error parsing JSON:", err);
-                }
-              }
-            }
-          } catch (error) {
-            if (error.name === "AbortError") {
-              return;
-            }
-            throw error;
-          }
-        }
-      } catch (error) {
-        if (error.name === "AbortError") {
-          return;
-        }
-        console.error("Error fetching stream:", error);
-      }
-    };
-
-    fetchImages();
-    return () => {
-      abortController.abort();
-    };
-  }, [images]);
-
   const handleGenerate = async () => {
     setIsLoading(true);
     setGeneratedImage(null);
-    const response = await fetch(
-      `https://image.pollinations.ai/prompt/${prompt}?model=${selectedModel}&width=${width}&height=${height}&nologo=true`
-    );
+    const url = new URL(`https://image.pollinations.ai/prompt/${prompt}`);
+    url.searchParams.append('model', selectedModel);
+    url.searchParams.append('nologo', 'true');
+    if (width) url.searchParams.append('width', width.toString());
+    if (height) url.searchParams.append('height', height.toString());
+    const response = await fetch(url.toString());
     const blob = await response.blob();
     const imageUrl = URL.createObjectURL(blob);
     setGeneratedImage(imageUrl);
@@ -152,9 +61,7 @@ export function PhotosArea({ leftMenuOpen, rightMenuOpen }: PhotosAreaProps) {
 
   return (
     <main
-      className={`flex flex-col transition-[margin] duration-300 ease-in-out p-6
-      ${leftMenuOpen ? "ml-64" : "ml-16"}
-      ${rightMenuOpen ? "mr-96" : "mr-16"}`}
+      className={`flex-1 flex flex-col transition-[margin] duration-300 ease-in-out p-6`}
     >
       <Card className="w-full max-w-3xl mx-auto mb-8 border-none mt-40">
         <CardHeader>

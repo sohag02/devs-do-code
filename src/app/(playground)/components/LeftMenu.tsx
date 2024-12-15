@@ -22,14 +22,8 @@ import {
 import { useTheme } from '../context/ThemeContext';
 import { useSettings } from '../context/SettingsContext';
 import UserCard from './UserCard';
-
-interface LeftMenuProps {
-  isOpen: boolean;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-  onNewChat?: () => void;
-  onShowPhotos?: () => void;
-}
+import { useRouter } from 'next/navigation'
+import { generateChatId } from '@/lib/utils';
 
 interface Personality {
   id: string;
@@ -39,13 +33,7 @@ interface Personality {
   tag: string;
 }
 
-export function LeftMenu({
-  isOpen,
-  onMouseEnter,
-  onMouseLeave,
-  onNewChat,
-  onShowPhotos,
-}: LeftMenuProps) {
+export function LeftMenu() {
   const { theme } = useTheme();
   const { selectedPersonalityId, setSelectedPersonalityId } = useSettings() as {
     selectedPersonalityId: string;
@@ -53,21 +41,29 @@ export function LeftMenu({
   };
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
   const [showUnavailableMessage, setShowUnavailableMessage] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSectionClick = (section: string) => {
     setExpandedSection(expandedSection === section ? null : section);
+  };
+
+  const router = useRouter()
+
+  const handleNewChat = () => {
+    const newChatId = generateChatId();
+    router.push(`/playground/${newChatId}`);
   };
 
   const menuItems = [
     {
       icon: MessageSquarePlus,
       label: 'Start a New Chat',
-      onClick: onNewChat,
+      onClick: handleNewChat,
     },
     {
       icon: Image,
       label: 'Photos',
-      onClick: onShowPhotos,
+      onClick: () => {router.push('/playground/image')},
     },
     {
       icon: Users,
@@ -163,13 +159,13 @@ export function LeftMenu({
 
   return (
     <div
-      className={`fixed left-0 top-0 h-full ${bgColor} shadow-lg z-10 transition-[width] duration-300 ease-in-out
+      className={`left-0 top-0 h-full ${bgColor} shadow-lg z-10 transition-[width] duration-300 ease-in-out
                 ${isOpen ? 'w-56' : 'w-14'}`}
     >
       <div
         className="flex flex-col h-full"
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
       >
         <div className={`p-3 border-b ${borderColor} flex items-center gap-2`}>
           <Bot className={`w-7 h-7 ${iconColor} shrink-0`} />

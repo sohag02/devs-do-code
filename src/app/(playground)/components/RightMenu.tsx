@@ -9,14 +9,15 @@ import { AdvancedSection } from './settings/AdvancedSection';
 import { useModel } from '../context/ModelContext';
 import { useVoice } from '../context/VoiceContext';
 
-interface RightMenuProps {
-  isOpen: boolean;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-}
+// interface RightMenuProps {
+//   isOpen: boolean;
+//   onMouseEnter: () => void;
+//   onMouseLeave: () => void;
+// }
 
-export function RightMenu({ isOpen, onMouseEnter, onMouseLeave }: RightMenuProps) {
+export function RightMenu() {
   const [expandedSection, setExpandedSection] = useState<number | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   const { selectedProvider, selectedModel } = useModel();
@@ -57,10 +58,10 @@ export function RightMenu({ isOpen, onMouseEnter, onMouseLeave }: RightMenuProps
 
   return (
     <div
-      className={`fixed right-0 top-0 h-full ${bgColor} z-10 transition-[width] duration-300 ease-in-out custom-scrollbar
+      className={`right-0 top-0 h-full ${bgColor} z-10 transition-[width] duration-300 ease-in-out custom-scrollbar
             ${isOpen ? 'w-96' : 'w-14'} flex flex-col`}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
     >
       {/* Settings Header */}
       <div className={`p-3 flex items-center gap-2 shrink-0`}>

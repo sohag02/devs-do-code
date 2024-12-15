@@ -7,10 +7,10 @@ import { ChatInput } from './chat/ChatInput';
 import { useModel } from '../context/ModelContext';
 import { useSettings } from '../context/SettingsContext';
 
-interface ChatAreaProps {
-  leftMenuOpen: boolean;
-  rightMenuOpen: boolean;
-}
+// interface ChatAreaProps {
+//   leftMenuOpen: boolean;
+//   rightMenuOpen: boolean;
+// }
 
 export interface Message {
   id: string;
@@ -27,7 +27,7 @@ export interface Message {
   hasFile?: boolean;
 }
 
-export function ChatArea({ leftMenuOpen, rightMenuOpen }: ChatAreaProps) {
+export function ChatArea() {
   const { theme } = useTheme();
   const { selectedProviderId, selectedModelId } = useModel();
   const { temperature } = useSettings();
@@ -230,9 +230,7 @@ export function ChatArea({ leftMenuOpen, rightMenuOpen }: ChatAreaProps) {
 
   return (
     <main
-      className={`flex-1 ${bgColor} flex flex-col overflow-hidden transition-[margin] duration-300 ease-in-out
-            ${leftMenuOpen ? 'ml-56' : 'ml-14'}
-            ${rightMenuOpen ? 'mr-80' : 'mr-14'}`}
+      className={`flex-1 ${bgColor} flex flex-col overflow-hidden transition-[margin] duration-300 ease-in-out`}
     >
       <div className="flex-1 overflow-hidden flex flex-col">
         {!chatStarted ? (
