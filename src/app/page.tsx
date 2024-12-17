@@ -5,8 +5,7 @@ import Navbar from "@/components/navbar";
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Check, ArrowRight, Sparkles, Bot, Zap, Shield } from 'lucide-react';
-import { redirect } from "next/navigation";
+import { ArrowRight, Sparkles, Bot, Zap, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const container = {
@@ -26,8 +25,6 @@ const item = {
 };
 
 export default function Page() {
-
-  redirect("/playground");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
