@@ -1,126 +1,40 @@
-'use client';
-import React, { useState } from 'react';
-import { Settings, ChevronDown, ChevronUp, Sun, Moon } from 'lucide-react';
+import React from 'react';
+import { ChevronRight, ChevronLeft, Settings } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useTheme } from '../context/ThemeContext';
-import { ModelSelector } from './settings/ModelSelector';
-import { VoiceSelector } from './settings/VoiceSelector';
-import { BehaviorSection } from './settings/BehaviorSection';
-import { AdvancedSection } from './settings/AdvancedSection';
-import { useModel } from '../context/ModelContext';
-import { useVoice } from '../context/VoiceContext';
 
-// interface RightMenuProps {
-//   isOpen: boolean;
-//   onMouseEnter: () => void;
-//   onMouseLeave: () => void;
-// }
+interface RightMenuProps {
+  isOpen: boolean;
+  onToggle: () => void;
+}
 
-export function RightMenu() {
-  const [expandedSection, setExpandedSection] = useState<number | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
-
-  const { selectedProvider, selectedModel } = useModel();
-  const { selectedVoiceProvider, selectedVoice } = useVoice();
-
-  const sections = [
-    {
-      title: 'Model Selection',
-      component: <ModelSelector />,
-      subtitle: `${selectedModel.name} by ${selectedProvider.name}`,
-    },
-    {
-      title: 'Voice Selection',
-      component: <VoiceSelector />,
-      subtitle: `${selectedVoice.name} by ${selectedVoiceProvider.name}`,
-    },
-    {
-      title: 'Behavior',
-      component: <BehaviorSection />,
-      subtitle: 'Customize AI behavior',
-    },
-    {
-      title: 'Advanced',
-      component: <AdvancedSection />,
-      subtitle: 'Fine-tune settings',
-    },
-  ];
-
-  const bgColor = theme === 'dark' ? 'bg-[#1A1A1A]' : 'bg-gray-100';
-  const textColor = theme === 'dark' ? 'text-white' : 'text-gray-900';
-  const hoverBg = theme === 'dark' ? 'hover:bg-[#242424]' : 'hover:bg-gray-50';
-
-  const expandedSectionBgColor = theme === 'dark' ? 'bg-[#1A1A1A]' : 'bg-gray-100';
-  const expandedSectionTextColor = theme === 'dark' ? 'text-white' : 'text-gray-900';
-
-  const iconColor = theme === 'dark' ? 'text-white' : 'text-gray-600';
-  const chevronIconColor = theme === 'dark' ? 'text-white' : 'text-gray-500';
+export function RightMenu({ isOpen, onToggle }: RightMenuProps) {
+  const { theme } = useTheme();
+  const bgColor = theme === 'dark' ? 'bg-[#1A1A1A]' : 'bg-white';
+  const textColor = theme === 'dark' ? 'text-gray-300' : 'text-gray-700';
+  const borderColor = theme === 'dark' ? 'border-gray-800' : 'border-gray-200';
 
   return (
     <div
-      className={`right-0 top-0 h-full ${bgColor} z-10 transition-[width] duration-300 ease-in-out custom-scrollbar
-            ${isOpen ? 'w-96' : 'w-14'} flex flex-col`}
-      onMouseEnter={() => setIsOpen(true)}
-      onMouseLeave={() => setIsOpen(false)}
+      className={`${bgColor} border-l ${borderColor} h-screen transition-all duration-300 ease-in-out ${
+        isOpen ? 'w-64' : 'w-16'
+      }`}
     >
-      {/* Settings Header */}
-      <div className={`p-3 flex items-center gap-2 shrink-0`}>
-        <Settings className={`w-7 h-7 ${iconColor} shrink-0`} />
-        <span
-          className={`font-semibold text-base ${textColor} transition-opacity duration-300 ${
-            isOpen ? 'opacity-100' : 'opacity-0'
-          }`}
-        >
-          Chat Settings
-        </span>
-        {isOpen && (
-          <button
-            onClick={toggleTheme}
-            className={`ml-auto p-1.5 rounded-full ${
-              theme === 'dark' ? 'hover:bg-[#242424]' : 'hover:bg-gray-100'
-            } transition-colors`}
-          >
-            {theme === 'dark' ? (
-              <Sun className="w-5 h-5 text-white" />
-            ) : (
-              <Moon className="w-5 h-5 text-gray-600" />
-            )}
-          </button>
-        )}
+      {/* Header */}
+      <div className="flex items-center justify-between p-4">
+        <Button variant="ghost" size="icon" onClick={onToggle}>
+          {isOpen ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+        </Button>
+        {isOpen && <h1 className={`text-lg font-bold ${textColor}`}>Settings</h1>}
       </div>
 
-      {/* Sections */}
+      {/* Content */}
       {isOpen && (
-        <div className="overflow-y-auto flex-1 custom-scrollbar">
-          {sections.map((section, index) => (
-            <div key={index} className="custom-scrollbar">
-              <button
-                className={`w-full p-3 text-left ${hoverBg} transition-colors`}
-                onClick={() => setExpandedSection(expandedSection === index ? null : index)}
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className={`font-medium ${textColor}`}>{section.title}</h3>
-                    <p className="text-sm text-gray-500">
-                      {expandedSection === index ? '' : section.subtitle}
-                    </p>
-                  </div>
-                  {expandedSection === index ? (
-                    <ChevronUp className={`w-5 h-5 ${chevronIconColor}`} />
-                  ) : (
-                    <ChevronDown className={`w-5 h-5 ${chevronIconColor}`} />
-                  )}
-                </div>
-              </button>
-              {expandedSection === index && (
-                <div
-                  className={`px-3 pb-3 ${expandedSectionBgColor} ${expandedSectionTextColor} custom-scrollbar`}
-                >
-                  {section.component}
-                </div>
-              )}
-            </div>
-          ))}
+        <div className="p-4">
+          <Button variant="ghost" className="w-full flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            <span>Preferences</span>
+          </Button>
         </div>
       )}
     </div>

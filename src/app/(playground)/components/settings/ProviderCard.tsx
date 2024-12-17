@@ -1,5 +1,6 @@
 import React from 'react';
-import { CheckCircle2, ExternalLink } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2, ExternalLink, ArrowRight } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useModel } from '../../context/ModelContext';
 import type { Provider } from '../../types/provider';
@@ -17,52 +18,97 @@ export function ProviderCard({ provider, onSelect }: ProviderCardProps) {
   const bgColor = theme === 'dark' ? 'bg-[#242424]' : 'bg-white';
   const borderColor = theme === 'dark' ? 'border-gray-600' : 'border-gray-200';
   const textColor = theme === 'dark' ? 'text-gray-200' : 'text-gray-700';
+  const glowColor = theme === 'dark' ? 'shadow-indigo-500/20' : 'shadow-indigo-500/30';
 
   const handleSelect = () => {
     setSelectedProviderId(provider.id);
-    setSelectedModelId(''); // Reset selected model when provider changes
+    setSelectedModelId('');
     onSelect();
   };
 
   return (
-    <button
+    <motion.button
       onClick={handleSelect}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`w-full p-3 ${bgColor} border ${borderColor} rounded-xl
-        transition-all duration-200 group
-        hover:border-indigo-400
-        hover:shadow-lg hover:-translate-y-0.5`}
+      className={`w-full p-4 ${bgColor} border ${borderColor} rounded-xl
+        transition-all duration-300
+        hover:border-indigo-400 relative
+        hover:shadow-lg hover:shadow-indigo-500/20
+        group`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ 
+        y: -4,
+        scale: 1.02,
+        transition: { type: "spring", stiffness: 300, damping: 20 }
+      }}
+      whileTap={{ scale: 0.98 }}
     >
-      <div className="flex items-start gap-3">
-        <div
-          className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0
-            bg-gradient-to-br from-gray-700 to-gray-800
-            flex items-center justify-center"
+      {/* Glow effect */}
+      <motion.div
+        className={`absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 opacity-0 
+          transition-opacity duration-300 ${glowColor}`}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+      />
+
+      <div className="flex items-start gap-4 relative z-10">
+        <motion.div
+          className={`w-12 h-12 rounded-xl overflow-hidden flex-shrink-0
+            bg-gradient-to-br from-indigo-500 to-purple-600
+            flex items-center justify-center p-2
+            group-hover:shadow-lg ${glowColor}`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          <img
+          <motion.img
             src={provider.logoUrl}
             alt={provider.name}
-            className="w-6 h-6 object-contain"
+            className="w-full h-full object-contain"
+            initial={{ filter: 'grayscale(100%)' }}
+            animate={{ filter: isHovered ? 'grayscale(0%)' : 'grayscale(100%)' }}
+            transition={{ duration: 0.3 }}
           />
-        </div>
+        </motion.div>
 
         <div className="flex-1 text-left">
           <div className="flex items-center gap-2">
-            <h3 className={`font-medium text-sm ${textColor}`}>{provider.name}</h3>
+            <h3 className={`font-medium text-sm ${textColor} group-hover:text-indigo-400 transition-colors`}>
+              {provider.name}
+            </h3>
             {provider.verified && (
-              <CheckCircle2 className="w-4 h-4 text-green-500" />
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                <CheckCircle2 className="w-4 h-4 text-green-500" />
+              </motion.div>
             )}
           </div>
 
-          <p className="text-xs text-gray-400 mt-1 line-clamp-2">{provider.description}</p>
+          <p className="text-xs text-gray-400 mt-1 line-clamp-2 group-hover:text-gray-300 transition-colors">
+            {provider.description}
+          </p>
 
-          <div className="flex flex-wrap items-center gap-1 mt-2">
+          <motion.div 
+            className="flex flex-wrap items-center gap-2 mt-3"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
             {provider.features.map((feature, index) => (
-              <div
+              <motion.div
                 key={index}
-                className={`flex items-center text-xs px-2 py-0.5 rounded-full
-                  ${theme === 'dark' ? 'bg-gray-700 text-gray-300' : 'bg-indigo-100 text-indigo-700'}`}
+                className={`flex items-center text-xs px-2 py-1 rounded-full
+                  ${theme === 'dark' 
+                    ? 'bg-gray-700 text-gray-300 group-hover:bg-indigo-900/40 group-hover:text-indigo-300' 
+                    : 'bg-indigo-50 text-indigo-700 group-hover:bg-indigo-100'
+                  } transition-colors`}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.05 }}
               >
                 {React.createElement(feature.icon, {
                   className: `w-3 h-3 mr-1 ${
@@ -70,17 +116,24 @@ export function ProviderCard({ provider, onSelect }: ProviderCardProps) {
                   }`,
                 })}
                 {feature.label}
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
-        <ExternalLink
-          className={`w-4 h-4 transition-colors duration-200
-            ${isHovered ? 'text-indigo-500' : 'text-gray-400'}
-            flex-shrink-0`}
-        />
+        <motion.div
+          className="flex-shrink-0 self-center"
+          animate={{ 
+            x: isHovered ? 5 : 0,
+            opacity: isHovered ? 1 : 0.5
+          }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        >
+          <ArrowRight className={`w-5 h-5 transition-colors duration-200
+            ${isHovered ? 'text-indigo-400' : 'text-gray-400'}`}
+          />
+        </motion.div>
       </div>
-    </button>
+    </motion.button>
   );
 }

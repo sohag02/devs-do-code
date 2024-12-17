@@ -28,17 +28,20 @@ export function FilePreview({
   const borderColor = theme === 'dark' ? 'border-gray-600' : 'border-gray-300';
 
   React.useEffect(() => {
-    if (file.type.startsWith('image/')) {
+    if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
+      reader.onload = (e) => {
+        setPreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
+
     return () => {
-      if (preview) URL.revokeObjectURL(preview);
+      if (preview) {
+        URL.revokeObjectURL(preview);
+      }
     };
-  }, [file]);
+  }, [file, preview]);
 
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';

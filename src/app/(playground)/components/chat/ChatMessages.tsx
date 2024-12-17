@@ -17,6 +17,7 @@ import { FileMessage } from './FileMessage';
 import { useModel } from '../../context/ModelContext';
 import { Message } from '../ChatArea';
 import { AIChatLoadingGlow } from './Thinking';
+import Image from 'next/image';
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -194,8 +195,17 @@ export function ChatMessages({ messages }: ChatMessagesProps) {
               className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}
             >
               {message.file ? (
-                // Render file message
-                <FileMessage message={message} />
+                // Render file message only if file exists
+                message.file && (
+                  <FileMessage
+                    message={{
+                      id: message.id,
+                      sender: message.sender,
+                      timestamp: message.timestamp,
+                      file: message.file
+                    }}
+                  />
+                )
               ) : (
                 // Render text message or thinking animation
                 <div
@@ -210,23 +220,23 @@ export function ChatMessages({ messages }: ChatMessagesProps) {
                     {/* Message Header */}
                     <div className="flex items-center gap-2 mb-2">
                       {isUser ? (
-                        <>
-                          <div className="flex w-full justify-end gap-2">
-                            <span className="text-sm font-medium">{userName}</span>
-                            <UserIcon className="w-5 h-5" />
-                          </div>
-                        </>
+                        <div className="flex w-full justify-end gap-2">
+                          <span className="text-sm font-medium">{userName}</span>
+                          <UserIcon className="w-5 h-5" />
+                        </div>
                       ) : (
-                        <>
-                          <img
-                            src={getProviderById(message.providerId!)?.logoUrl}
-                            alt={getProviderById(message.providerId!)?.name}
-                            className="w-6 h-6 object-contain"
+                        <div className="flex items-center gap-2">
+                          <Image
+                            src={getProviderById(message.providerId!)?.logoUrl ?? '/default-avatar.png'}
+                            alt={getProviderById(message.providerId!)?.name ?? 'AI Provider'}
+                            width={20}
+                            height={20}
+                            className="rounded-full"
                           />
                           <span className="text-sm font-medium">
                             {getProviderById(message.providerId!)?.name}
                           </span>
-                        </>
+                        </div>
                       )}
                     </div>
 

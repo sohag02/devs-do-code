@@ -22,7 +22,7 @@ interface FileMessageProps {
       size?: number;
     };
   };
-  onDelete?: () => void;
+  onDelete?: (id: string) => void;
 }
 
 const FileIcon = ({ fileType, fileName }: { fileType: string; fileName: string }) => {
@@ -138,7 +138,7 @@ export function FileMessage({ message, onDelete }: FileMessageProps) {
             </button>
             {onDelete && (
               <button
-                onClick={onDelete}
+                onClick={() => onDelete(message.id)}
                 className={styles.actionButton}
                 aria-label="Delete file"
                 title="Delete"

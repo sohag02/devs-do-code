@@ -23,8 +23,10 @@ export interface Message {
     name: string;
     type: string;
     url: string;
+    size?: number;
   };
   hasFile?: boolean;
+  thinking?: boolean;
 }
 
 export function ChatArea() {
@@ -42,70 +44,77 @@ export function ChatArea() {
     if (!content.trim() && attachments.length === 0) return;
 
     setIsAnimating(true);
+    const aiMessageId = Date.now().toString();
     
-    // Handle attachments (if needed)
-    if (attachments.length > 0) {
-      const attachmentMessages: Message[] = attachments.map((file) => ({
-        id: (Date.now() + Math.random()).toString(),
-        content: '',
-        sender: 'user',
-        timestamp: new Date(),
-        file: {
-          name: file.name,
-          type: file.type,
-          url: URL.createObjectURL(file),
-        },
-      }));
-
-      setMessages((prev) => [...prev, ...attachmentMessages]);
-    }
-
-    // Add user message
-    if (content.trim()) {
-      const userMessage: Message = {
-        id: Date.now().toString(),
-        content,
-        sender: 'user',
-        timestamp: new Date(),
-        hasFile: attachments.length > 0,
-      };
-      setMessages((prev) => [...prev, userMessage]);
-    }
-
-    if (!chatStarted) setChatStarted(true);
-
-    // Prepare payload for API request
-    const payload = {
-      model: 'mistralai/Mixtral-8x22B-Instruct-v0.1',
-      messages: [
-        { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content },
-      ],
-      temperature: temperature,
-      max_tokens: 4096,
-      stream: true,
-    };
-
-    const endpoint = 'https://api-handler-deepinfra.hf.space/chat/completions';
-
     try {
+      // Handle attachments (if needed)
+      if (attachments.length > 0) {
+        const attachmentMessages: Message[] = await Promise.all(attachments.map(async (file) => {
+          const fileSize = file.size;
+          const url = URL.createObjectURL(file);
+          
+          return {
+            id: (Date.now() + Math.random()).toString(),
+            content: '',
+            sender: 'user',
+            timestamp: new Date(),
+            file: {
+              name: file.name,
+              type: file.type,
+              url,
+              size: fileSize,
+            },
+          };
+        }));
+
+        setMessages((prev) => [...prev, ...attachmentMessages]);
+      }
+
+      // Add user message
+      if (content.trim()) {
+        const userMessage: Message = {
+          id: Date.now().toString(),
+          content,
+          sender: 'user',
+          timestamp: new Date(),
+          hasFile: attachments.length > 0,
+        };
+        setMessages((prev) => [...prev, userMessage]);
+      }
+
+      if (!chatStarted) setChatStarted(true);
+
+      // Prepare payload for API request
+      const payload = {
+        model: selectedModelId || 'mistralai/Mixtral-8x22B-Instruct-v0.1',
+        messages: [
+          { role: 'system', content: 'You are a helpful assistant.' },
+          { role: 'user', content },
+        ],
+        temperature: temperature,
+        max_tokens: 4096,
+        stream: true,
+      };
+
+      const endpoint = 'https://api-handler-deepinfra.hf.space/chat/completions';
+
       await new Promise((resolve) => setTimeout(resolve, 500));
 
       const controller = new AbortController();
       controllerRef.current = controller;
       const signal = controller.signal;
 
-      const aiMessageId = Date.now() + 1;
-      const aiMessage: Message = {
-        id: aiMessageId.toString(),
-        content: '',
-        sender: 'ai',
-        timestamp: new Date(),
-        providerId: selectedProviderId,
-        modelId: selectedModelId,
-      };
-
-      setMessages((prev) => [...prev, aiMessage]);
+      // Add the initial AI message with a thinking state
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: aiMessageId,
+          content: '',
+          sender: 'ai',
+          timestamp: new Date(),
+          thinking: true,
+        },
+      ]);
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -154,7 +163,7 @@ export function ChatArea() {
                 if (now - lastUpdate > updateInterval) {
                   setMessages((prevMessages) =>
                     prevMessages.map((msg) =>
-                      msg.id === aiMessageId.toString()
+                      msg.id === aiMessageId
                         ? { ...msg, content: fullContent }
                         : msg
                     )
@@ -172,8 +181,8 @@ export function ChatArea() {
       // Final update
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
-          msg.id === aiMessageId.toString()
-            ? { ...msg, content: fullContent }
+          msg.id === aiMessageId
+            ? { ...msg, content: fullContent, thinking: false }
             : msg
         )
       );
@@ -182,14 +191,24 @@ export function ChatArea() {
     } catch (error) {
       console.error('Error during streaming:', error);
       // Only update with error message if it's not an abort error
-      if (error.name !== 'AbortError') {
-        setMessages((prevMessages) =>
-          prevMessages.map((msg) =>
-            msg.id === aiMessageId.toString()
-              ? { ...msg, content: 'An error occurred while fetching the response.' }
-              : msg
-          )
-        );
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          setMessages((prevMessages) =>
+            prevMessages.filter((msg) => msg.id !== aiMessageId)
+          );
+        } else {
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.id === aiMessageId
+                ? {
+                    ...msg,
+                    content: 'An error occurred while generating the response. Please try again.',
+                    thinking: false,
+                  }
+                : msg
+            )
+          );
+        }
       }
       setIsAnimating(false);
     } finally {
@@ -219,14 +238,22 @@ export function ChatArea() {
       if (controllerRef.current) {
         controllerRef.current.abort();
       }
-      messages.forEach((message) => {
-        if (message.file?.url) {
-          URL.revokeObjectURL(message.file.url);
-        }
-      });
     };
-    // Empty dependency array ensures this runs only on unmount
   }, []);
+
+  // Auto-scroll effect
+  useEffect(() => {
+    const chatContainer = document.getElementById('chat-container');
+    if (chatContainer) {
+      const shouldScroll =
+        chatContainer.scrollHeight - chatContainer.scrollTop <=
+        chatContainer.clientHeight + 100;
+
+      if (shouldScroll) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    }
+  }, [messages]);
 
   return (
     <main
@@ -239,7 +266,7 @@ export function ChatArea() {
             onFileUpload={() => {}}
           />
         ) : (
-          <>
+          <React.Fragment>
             <ChatMessages messages={messages} />
             <div className="mb-16"></div>
             <ChatInput
@@ -251,7 +278,7 @@ export function ChatArea() {
               onStopGeneration={handleStopGeneration}
               className={`fixed mt-auto bottom-0 left-0 right-0 ${bgColor}`}
             />
-          </>
+          </React.Fragment>
         )}
       </div>
     </main>

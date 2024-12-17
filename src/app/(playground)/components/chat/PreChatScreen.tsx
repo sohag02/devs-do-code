@@ -1,137 +1,148 @@
 'use client';
 import React, { useState } from 'react';
-import {
-  Settings,
-  Bot,
-  Sparkles,
-  Search,
-  FileText,
-  Code,
-  ImageIcon,
-  Brain,
-} from 'lucide-react';
-import { useTheme } from '../../context/ThemeContext';
-import { ChatInput } from './ChatInput';
+import { Bot, Image, Search, Code, Book, ArrowRight, Sparkles } from 'lucide-react';
+import { Button } from '../../../../components/ui/button';
+import { Input } from '../../../../components/ui/input';
+import { motion } from 'framer-motion';
 
 interface PreChatScreenProps {
   onSendMessage: (message: string, attachments: File[]) => void;
-  onFileUpload?: (files: File[]) => void;
+  onFileUpload?: () => void;
 }
 
+const actionItems = [
+  { icon: Image, label: 'Generate Image', id: 'generate-image' },
+  { icon: Search, label: 'Web Search', id: 'web-search' },
+  { icon: Book, label: 'Summarize', id: 'summarize' },
+  { icon: Code, label: 'Explain Code', id: 'explain-code' },
+];
+
 export function PreChatScreen({ onSendMessage, onFileUpload }: PreChatScreenProps) {
-  const { theme } = useTheme();
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [chatInputValue, setChatInputValue] = useState('');
+  const [message, setMessage] = useState('');
+  const [isHovered, setIsHovered] = useState('');
 
-  // Define colors based on the theme for better visibility
-  const textColor = theme === 'dark' ? 'text-gray-100' : 'text-gray-800';
-  const mutedColor = theme === 'dark' ? 'text-gray-400' : 'text-gray-500';
-  const buttonBgColor = theme === 'dark' ? 'bg-[#242424]' : 'bg-white';
-  const buttonBorderColor =
-    theme === 'dark' ? 'border-gray-600' : 'border-gray-200';
-  const buttonHoverBgColor =
-    theme === 'dark' ? 'hover:bg-[#545454]' : 'hover:bg-gray-100';
-  const buttonHoverBorderColor =
-    theme === 'dark' ? 'hover:border-indigo-400' : 'hover:border-indigo-300';
-  const buttonTextColor = theme === 'dark' ? 'text-gray-100' : 'text-gray-800';
-  const iconColor = theme === 'dark' ? 'text-indigo-400' : 'text-indigo-500';
-
-  const quickActions = [
-    { icon: ImageIcon, label: 'Generate Image' },
-    { icon: Search, label: 'Web Search' },
-    { icon: FileText, label: 'Summarize' },
-    { icon: Brain, label: 'Explain Concept' },
-    { icon: Sparkles, label: 'Solve Problem' },
-    { icon: Code, label: 'Explain Code' },
-    { icon: Bot, label: 'Analyze Image' },
-  ];
-
-  const actionTexts: { [key: string]: string } = {
-    'Generate Image': 'Generate an image with the following description: ',
-    'Web Search': 'Please search the web for the following query: ',
-    'Summarize': 'Summarize the following text: ',
-    'Explain Concept': 'Explain the following concept: ',
-    'Solve Problem': 'Solve the following problem: ',
-    'Explain Code': 'Explain the following code: ',
-    'Analyze Image': 'Analyze the following image: ',
-  };
-
-  const handleQuickAction = (action: string) => {
-    if (actionTexts[action]) {
-      setChatInputValue(actionTexts[action]);
-    } else {
-      setChatInputValue(action);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (message.trim()) {
+      onSendMessage(message, []);
+      setMessage('');
     }
   };
 
-  const handleMessage = (message: string, attachments: File[]) => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      onSendMessage(message, attachments);
-      setChatInputValue(''); // Clear the input after sending
-      setIsTransitioning(false); // Reset the transition state
-    }, 300);
-  };
-
   return (
-    <div
-      className={`flex-1 flex flex-col px-3 transition-opacity duration-300
-            ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
-    >
-      {/* Middle content container */}
-      <div className="flex-1 flex flex-col items-center justify-center">
-        <div className="w-20 h-20 mb-6 relative">
-          <div className="absolute inset-0 bg-indigo-500 rounded-full opacity-20 animate-ping" />
-          <div className="absolute inset-0 bg-indigo-500 rounded-full opacity-40 animate-pulse" />
-          <div className="relative w-full h-full bg-indigo-600 rounded-full flex items-center justify-center">
-            <Bot className="w-10 h-10 text-white" />
-          </div>
+    <div className="relative h-full flex flex-col items-center justify-center px-4 z-10">
+      {/* Ambient Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black to-zinc-900" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
+      
+      {/* AI Assistant Icon */}
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="mb-12 relative z-10"
+      >
+        <motion.div 
+          className="absolute inset-0 bg-white/5 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.5, 0.3]
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <div className="relative w-24 h-24 rounded-full border border-white/10 bg-gradient-to-br from-zinc-900 to-black flex items-center justify-center shadow-xl">
+          <Sparkles className="w-12 h-12 text-white/80" />
         </div>
+      </motion.div>
 
-        <h1 className={`text-2xl font-semibold mb-6 ${textColor} text-center`}>
-          How can I assist you today?
+      {/* Title */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="text-center mb-12 relative z-10"
+      >
+        <h1 className="text-4xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-white/80 font-geist-sans mb-4 tracking-tight leading-[1.1]">
+          How can I assist you?
         </h1>
+        <p className="text-zinc-400 text-lg md:text-xl font-geist-sans font-light">
+          Your creative AI companion
+        </p>
+      </motion.div>
 
-        {/* Wrapped ChatInput in a container with set width */}
-        <div className="w-full max-w-xl mb-6">
-          <ChatInput
-            onSendMessage={handleMessage}
-            onFileUpload={onFileUpload}
-            className="!p-0 !border-0"
-            initialValue={chatInputValue}
-            onChange={(text) => setChatInputValue(text)}
-            inputWidthClass="w-full" // Increased input width to full
+      {/* Input Area */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className="w-full max-w-2xl mb-12 relative z-10"
+      >
+        <form onSubmit={handleSubmit} className="relative group">
+          <Input
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type your message..."
+            className="w-full h-16 bg-zinc-900/50 border-white/5 text-white placeholder:text-zinc-500 py-6 px-6 rounded-2xl focus:ring-1 focus:ring-white/20 backdrop-blur-xl shadow-xl transition-all duration-300 group-hover:border-white/10 font-geist-sans"
           />
-        </div>
+          <Button
+            type="submit"
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white hover:bg-white/90 text-black rounded-xl px-6 h-10 transition-all duration-300 shadow-lg hover:shadow-white/10 font-geist-sans font-medium"
+          >
+            <ArrowRight className="w-5 h-5" />
+          </Button>
+        </form>
+      </motion.div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-w-xl mb-8">
-          {quickActions.map(({ icon: Icon, label }) => (
-            <button
-              key={label}
-              className={`px-3 py-2 rounded-xl border ${buttonBorderColor} ${buttonBgColor} ${buttonTextColor}
-                    ${buttonHoverBgColor} ${buttonHoverBorderColor} hover:shadow-md hover:-translate-y-0.5
-                    transition-all duration-200 flex flex-col items-center gap-1`}
-              onClick={() => handleQuickAction(label)}
-            >
-              <Icon className={`w-4 h-4 ${iconColor}`} />
-              <span className={`text-xs text-center ${buttonTextColor}`}>{label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Action Buttons */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-2xl relative z-10"
+      >
+        {actionItems.map((action) => (
+          <motion.button
+            key={action.id}
+            onMouseEnter={() => setIsHovered(action.id)}
+            onMouseLeave={() => setIsHovered('')}
+            onClick={() => {
+              const prefix = {
+                'generate-image': 'Generate an image of ',
+                'web-search': 'Search the web for ',
+                'summarize': 'Summarize this: ',
+                'explain-code': 'Explain this code: ',
+              }[action.id];
+              setMessage(prefix || '');
+            }}
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className="relative group"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-white/0 rounded-2xl blur-xl transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
+            <div className="relative h-full p-6 rounded-2xl bg-zinc-900/50 border border-white/5 backdrop-blur-sm hover:border-white/10 transition-all duration-300">
+              <div className="flex flex-col items-center justify-center space-y-3">
+                <action.icon className={`w-7 h-7 ${isHovered === action.id ? 'text-white' : 'text-zinc-400'} transition-colors duration-300`} />
+                <span className={`text-sm ${isHovered === action.id ? 'text-white' : 'text-zinc-400'} font-medium font-geist-sans transition-colors duration-300`}>
+                  {action.label}
+                </span>
+              </div>
+            </div>
+          </motion.button>
+        ))}
+      </motion.div>
 
-      {/* Footer content */}
-      <div className={`text-center ${mutedColor} space-y-1 mb-3 text-xs`}>
-        <p className="font-semibold">
-          <span className="text-indigo-500">DDC Providers</span> could make mistakes. Please verify important
-          information.
-        </p>
-        <p className="flex items-center justify-center gap-1">
-          <Settings className="w-4 h-4" />
-          Customize your AI assistant in settings
-        </p>
-        <p>Press ⌃↵ to send a message</p>
-      </div>
+      {/* Footer */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="absolute bottom-8 left-0 right-0 text-center text-zinc-600 text-sm font-geist-sans"
+      >
+        <p>Press <kbd className="px-2 py-1 bg-zinc-900/80 rounded-md text-xs border border-white/5 backdrop-blur-sm font-geist-mono">↵</kbd> to send</p>
+      </motion.div>
     </div>
   );
 }

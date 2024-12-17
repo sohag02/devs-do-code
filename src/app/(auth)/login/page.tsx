@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,6 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { LogIn } from "lucide-react";
 
 function GoogleIcon() {
   return (
@@ -20,50 +18,41 @@ function GoogleIcon() {
   );
 }
 
-export default async function SignInPage(props: {
-  searchParams: { callbackUrl: string | undefined };
-}) {
-  const SIGNIN_ERROR_URL = "/signin-error";
-  const params = await props.searchParams;
-  const callback_url = params.callbackUrl;
-
+export default function SignInPage() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-green-500 to-black">
-      <Card className="w-full max-w-md mx-4 shadow-2xl transition-all duration-300 ease-in-out hover:shadow-3xl">
-        <CardHeader className="space-y-1 text-center">
-          <div className="flex justify-center mb-4">
-            <LogIn className="w-10 h-10 animate-pulse" />
-          </div>
-          <CardTitle className="text-3xl font-bold tracking-tight">
-            Welcome Back
-          </CardTitle>
-          <CardDescription>Sign in to access your account</CardDescription>
+    <div className="flex items-center justify-center min-h-screen">
+      <Card className="w-[350px]">
+        <CardHeader>
+          <CardTitle>Welcome back</CardTitle>
+          <CardDescription>
+            Sign in to your account to continue
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form
             action={async () => {
               "use server";
               try {
-                await signIn("google", {
-                  redirectTo: callback_url ?? "",
-                });
+                await signIn("google", { callbackUrl: "/" });
               } catch (error) {
                 if (error instanceof AuthError) {
-                  return redirect(`${SIGNIN_ERROR_URL}?error=${error.type}`);
+                  switch (error.type) {
+                    case "CredentialsSignin":
+                      throw new Error("Invalid credentials.");
+                    default:
+                      throw new Error("Something went wrong.");
+                  }
                 }
                 throw error;
               }
             }}
-            className="space-y-4"
           >
             <Button
+              className="w-full bg-white hover:bg-gray-50 text-black border border-gray-300"
               type="submit"
-              size="lg"
-              className="w-full bg-white text-gray-800 hover:bg-gray-100 transition-colors duration-200 flex items-center justify-center space-x-2"
             >
-              {/* <FaGoogle className="w-5 h-5" /> */}
               <GoogleIcon />
-              <span>Sign in with Google</span>
+              <span className="ml-2">Continue with Google</span>
             </Button>
           </form>
         </CardContent>
