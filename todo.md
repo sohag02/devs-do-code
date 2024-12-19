@@ -1,0 +1,1 @@
+also make the ui ux much much better..use framer motion and also make it aesthetic and responsive too..black and white and gray color u can use..
