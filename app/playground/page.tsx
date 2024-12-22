@@ -36,24 +36,24 @@ export default function Playground() {
     )
   }
 
-  if (!session) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-[#121212]">
-        <div className="text-center max-w-md mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-4">Sign in Required</h2>
-          <p className="text-gray-400 mb-8">
-            Please sign in to access the playground and start experimenting with our AI models.
-          </p>
-          <Button 
-            onClick={() => router.push('/auth/signin')}
-            className="bg-blue-600 hover:bg-blue-700"
-          >
-            Sign In
-          </Button>
-        </div>
-      </div>
-    )
-  }
+  // if (!session) {
+  //   return (
+  //     <div className="h-screen flex items-center justify-center bg-[#121212]">
+  //       <div className="text-center max-w-md mx-auto px-4">
+  //         <h2 className="text-2xl font-bold mb-4">Sign in Required</h2>
+  //         <p className="text-gray-400 mb-8">
+  //           Please sign in to access the playground and start experimenting with our AI models.
+  //         </p>
+  //         <Button 
+  //           onClick={() => router.push('/auth/signin')}
+  //           className="bg-blue-600 hover:bg-blue-700"
+  //         >
+  //           Sign In
+  //         </Button>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   return (
     <div className="flex h-screen">
