@@ -54,11 +54,10 @@ export function ChatInterface() {
       </div>
 
       <footer className="text-center space-y-2 text-sm text-gray-500">
-        <p className="italic">DDC could make mistakes. Please verify important information.</p>
+        <p><span className="font-bold italic">DDC</span> could make mistakes. Please verify important information.</p>
         <p>press the <Settings className="w-4 h-4 inline mx-1" /> icon to customize your AI assistant</p>
         <p>press <kbd className="px-1 py-0.5 text-xs bg-[#2A2A2A] rounded">⌘</kbd> + <kbd className="px-1 py-0.5 text-xs bg-[#2A2A2A] rounded">↵</kbd> to send a message</p>
       </footer>
     </div>
   )
 }
-

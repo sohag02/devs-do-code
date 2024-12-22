@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Brain, Settings, Sparkles, LayoutGrid, Key, Plus, Brush, MessageCircle, Folder, PlayCircle, FileText, DollarSign, Users, Mail } from 'lucide-react'
+import { Brain, PlayCircle, FileText, DollarSign, Users, Mail, Settings, Github, Twitter, Instagram, Send } from 'lucide-react'
 import Link from 'next/link'
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 
 const menuItemVariants = {
   hidden: { opacity: 0, x: -20 },
@@ -19,6 +19,13 @@ const menuItemVariants = {
   })
 }
 
+const socialLinks = [
+  { icon: Github, href: 'https://github.com/devsdocode', label: 'GitHub' },
+  { icon: Twitter, href: 'https://twitter.com/devsdocode', label: 'Twitter' },
+  { icon: Instagram, href: 'https://instagram.com/devsdocode', label: 'Instagram' },
+  { icon: Send, href: 'https://t.me/devsdocode', label: 'Telegram' },
+]
+
 export function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false)
   const { data: session } = useSession()
@@ -29,13 +36,6 @@ export function Sidebar() {
     { icon: DollarSign, label: 'Pricing', className: 'text-yellow-400', href: '/pricing' },
     { icon: Users, label: 'About Us', className: 'text-blue-400', href: '/about' },
     { icon: Mail, label: 'Contact', className: 'text-pink-400', href: '/contact' },
-    { icon: Sparkles, label: 'Upgrade to pro', className: 'text-blue-400', href: '#' },
-    { icon: LayoutGrid, label: 'Blog', className: 'text-gray-400', href: '#' },
-    { icon: Key, label: 'docTalk', className: 'text-gray-400', badge: '🧪', href: '#' },
-    { icon: Plus, label: 'Start a new chat', className: 'text-gray-400', href: '#' },
-    { icon: Brush, label: 'Themes', className: 'text-gray-400', href: '#' },
-    { icon: MessageCircle, label: 'Chat History', className: 'text-gray-400', href: '#' },
-    { icon: Folder, label: 'Create a New Folder', className: 'text-gray-400', href: '#' },
   ]
 
   return (
@@ -103,14 +103,6 @@ export function Sidebar() {
                         transition={{ duration: 0.2 }}
                       >
                         {item.label}
-                        {item.badge && (
-                          <motion.span 
-                            className="ml-2 inline-block"
-                            whileHover={{ scale: 1.2 }}
-                          >
-                            {item.badge}
-                          </motion.span>
-                        )}
                       </motion.span>
                     </Link>
                   </motion.div>
@@ -120,43 +112,61 @@ export function Sidebar() {
           </div>
 
           {/* Footer */}
-          <motion.div 
-            className="mt-auto pt-4 border-t border-[#2A2A2A]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-          >
-            <div className="flex items-center gap-4 px-2">
-              <motion.div whileHover={{ rotate: 180 }} transition={{ duration: 0.3 }}>
-                <Settings className="w-6 h-6 text-gray-400 shrink-0" />
-              </motion.div>
-              <motion.div
-                className="flex items-center gap-4"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: isExpanded ? 1 : 0 }}
-                transition={{ duration: 0.2 }}
+          <div className="mt-auto pt-4 border-t border-[#2A2A2A] space-y-4">
+            {/* Settings */}
+            {session && (
+              <Link
+                href="/settings"
+                className="flex items-center gap-4 px-2 py-2 rounded-lg hover:bg-white/5 transition-colors group"
               >
-                {session ? (
-                  <>
-                    <span className="text-gray-400 text-sm">{session.user?.name}</span>
-                    <button
-                      onClick={() => signOut()}
-                      className="text-gray-400 hover:text-white text-sm transition-colors"
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Settings className="w-6 h-6 shrink-0 text-gray-400" />
+                </motion.div>
+                <motion.span
+                  className="text-gray-300 text-sm whitespace-nowrap group-hover:text-white transition-colors"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isExpanded ? 1 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  Settings
+                </motion.span>
+              </Link>
+            )}
+
+            {/* Social Links */}
+            <div className={`grid ${isExpanded ? 'grid-cols-4' : 'grid-cols-1'} gap-2 px-2`}>
+              {socialLinks.map((social, index) => (
+                <motion.a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center p-2 rounded-lg hover:bg-white/5 transition-colors group"
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                  initial="hidden"
+                  animate="visible"
+                  custom={index}
+                  variants={menuItemVariants}
+                >
+                  <social.icon className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                  {isExpanded && (
+                    <motion.span
+                      className="sr-only"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
                     >
-                      Sign out
-                    </button>
-                  </>
-                ) : (
-                  <Link 
-                    href="/auth/signin" 
-                    className="text-gray-400 hover:text-white text-sm transition-colors"
-                  >
-                    Sign in
-                  </Link>
-                )}
-              </motion.div>
+                      {social.label}
+                    </motion.span>
+                  )}
+                </motion.a>
+              ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </motion.div>
     </div>

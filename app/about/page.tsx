@@ -1,155 +1,270 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Footer } from '@/components/footer'
-import { Brain, Code, Users, Globe } from 'lucide-react'
+import { Github, Linkedin, Twitter, Mail, Globe, ArrowRight } from 'lucide-react'
+import Image from 'next/image'
+import { useState } from 'react'
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.48, 0.15, 0.25, 0.96]
+    }
+  }
+}
 
 const team = [
   {
-    name: 'John Doe',
-    role: 'CEO & Co-founder',
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=john',
+    name: 'Saunak Ghosh',
+    role: 'Full Stack Developer',
+    image: '/team/saunak.jpg',
+    bio: 'Passionate about building scalable web applications and exploring new technologies. Experienced in React, Node.js, and cloud architecture.',
+    skills: ['React', 'Node.js', 'TypeScript', 'AWS', 'Next.js'],
+    links: {
+      github: 'https://github.com/saunak',
+      linkedin: 'https://linkedin.com/in/saunak',
+      twitter: 'https://twitter.com/saunak',
+      portfolio: 'https://saunak.dev'
+    }
   },
   {
-    name: 'Jane Smith',
-    role: 'CTO & Co-founder',
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=jane',
+    name: 'Sreejan Anand',
+    role: 'AI/ML Engineer',
+    image: '/team/sreejan.jpg',
+    bio: 'AI enthusiast with a focus on machine learning and natural language processing. Building intelligent systems that make a difference.',
+    skills: ['Python', 'TensorFlow', 'PyTorch', 'NLP', 'Computer Vision'],
+    links: {
+      github: 'https://github.com/sreejan',
+      linkedin: 'https://linkedin.com/in/sreejan',
+      twitter: 'https://twitter.com/sreejan',
+      portfolio: 'https://sreejan.dev'
+    }
   },
   {
-    name: 'Mike Johnson',
-    role: 'Head of Engineering',
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mike',
-  },
-  {
-    name: 'Sarah Wilson',
-    role: 'Head of AI',
-    image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sarah',
-  },
+    name: 'Sohag',
+    role: 'UI/UX Designer & Developer',
+    image: '/team/sohag.jpg',
+    bio: 'Creative developer with an eye for design. Specializing in creating beautiful and intuitive user experiences.',
+    skills: ['UI/UX', 'Figma', 'React', 'Tailwind CSS', 'Motion Design'],
+    links: {
+      github: 'https://github.com/sohag',
+      linkedin: 'https://linkedin.com/in/sohag',
+      twitter: 'https://twitter.com/sohag',
+      portfolio: 'https://sohag.dev'
+    }
+  }
 ]
 
-const values = [
+const achievements = [
   {
-    icon: Brain,
-    title: 'Innovation First',
-    description: 'We push the boundaries of what is possible with AI and coding assistance.',
+    title: 'Projects Delivered',
+    count: '50+',
+    description: 'Successful projects across various domains'
   },
   {
-    icon: Code,
-    title: 'Developer Experience',
-    description: 'Everything we build is crafted with developers needs in mind.',
+    title: 'Happy Clients',
+    count: '30+',
+    description: 'Satisfied clients worldwide'
   },
   {
-    icon: Users,
-    title: 'Community Driven',
-    description: 'Our community shapes our product and drives our innovation.',
+    title: 'Technologies',
+    count: '20+',
+    description: 'Technologies mastered'
   },
   {
-    icon: Globe,
-    title: 'Global Impact',
-    description: 'We are building tools that empower developers worldwide.',
-  },
+    title: 'Years Experience',
+    count: '5+',
+    description: 'Combined years of experience'
+  }
 ]
+
+interface FlipCardProps {
+  member: typeof team[0]
+}
+
+const FlipCard = ({ member }: FlipCardProps) => {
+  const [isFlipped, setIsFlipped] = useState(false)
+
+  return (
+    <motion.div
+      className="relative w-full h-[400px] cursor-pointer perspective"
+      onHoverStart={() => setIsFlipped(true)}
+      onHoverEnd={() => setIsFlipped(false)}
+      variants={itemVariants}
+    >
+      <motion.div
+        className="w-full h-full relative preserve-3d transition-transform duration-500"
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+      >
+        {/* Front of card */}
+        <div className="absolute w-full h-full backface-hidden">
+          <div className="bg-[#2A2A2A] rounded-2xl p-6 h-full border border-[#3A3A3A] overflow-hidden group">
+            <div className="relative w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden">
+              <Image
+                src={member.image}
+                alt={member.name}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <h3 className="text-xl font-bold text-center mb-2">{member.name}</h3>
+            <p className="text-blue-400 text-center mb-4">{member.role}</p>
+            <p className="text-gray-400 text-center mb-4">{member.bio}</p>
+            <div className="flex flex-wrap gap-2 justify-center">
+              {member.skills.map((skill, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 bg-[#3A3A3A] rounded-full text-sm text-gray-300"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Back of card */}
+        <div className="absolute w-full h-full backface-hidden rotate-y-180">
+          <div className="bg-[#2A2A2A] rounded-2xl p-6 h-full border border-[#3A3A3A] flex flex-col justify-center items-center">
+            <div className="space-y-6">
+              <a
+                href={member.links.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors"
+              >
+                <Github className="w-6 h-6" />
+                <span>GitHub</span>
+              </a>
+              <a
+                href={member.links.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors"
+              >
+                <Linkedin className="w-6 h-6" />
+                <span>LinkedIn</span>
+              </a>
+              <a
+                href={member.links.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors"
+              >
+                <Twitter className="w-6 h-6" />
+                <span>Twitter</span>
+              </a>
+              <a
+                href={member.links.portfolio}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-gray-300 hover:text-white transition-colors"
+              >
+                <Globe className="w-6 h-6" />
+                <span>Portfolio</span>
+              </a>
+              <a
+                href={`mailto:${member.name.toLowerCase().replace(' ', '.')}@example.com`}
+                className="inline-flex items-center justify-center w-full gap-2 px-6 py-3 mt-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Hire Me
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[#1A1A1A]">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        {/* Hero Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-24"
-        >
-          <h1 className="text-4xl font-bold text-white mb-6">
-            Building the Future of Code
-          </h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            We're a team of developers, designers, and AI researchers working to make
-            coding more accessible, efficient, and enjoyable for everyone.
+    <motion.div
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Hero Section */}
+      <motion.div variants={itemVariants} className="text-center mb-16">
+        <h1 className="text-4xl sm:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
+          Meet Our Team
+        </h1>
+        <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          We're a passionate team of developers and designers building the future of AI-powered development.
+        </p>
+      </motion.div>
+
+      {/* Team Section */}
+      <motion.div variants={itemVariants} className="grid md:grid-cols-3 gap-8 mb-24">
+        {team.map((member, index) => (
+          <FlipCard key={index} member={member} />
+        ))}
+      </motion.div>
+
+      {/* Achievements Section */}
+      <motion.div variants={itemVariants} className="mb-24">
+        <h2 className="text-3xl font-bold text-center mb-12">Our Achievements</h2>
+        <div className="grid md:grid-cols-4 gap-8">
+          {achievements.map((achievement, index) => (
+            <motion.div
+              key={index}
+              className="text-center"
+              variants={itemVariants}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="bg-[#2A2A2A] rounded-xl p-6 border border-[#3A3A3A]">
+                <h3 className="text-4xl font-bold text-blue-500 mb-2">{achievement.count}</h3>
+                <h4 className="text-lg font-semibold mb-2">{achievement.title}</h4>
+                <p className="text-gray-400">{achievement.description}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Contact Section */}
+      <motion.div variants={itemVariants}>
+        <div className="text-center bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-2xl p-8 border border-[#3A3A3A]">
+          <h2 className="text-2xl font-bold mb-4">Let's Work Together</h2>
+          <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
+            We're always looking for new opportunities to collaborate and create amazing projects.
+            Whether you have a project in mind or just want to chat, we'd love to hear from you!
           </p>
-        </motion.div>
-
-        {/* Values Section */}
-        <section className="mb-24">
-          <h2 className="text-3xl font-bold text-white text-center mb-12">Our Values</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {values.map((value, index) => (
-              <motion.div
-                key={value.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-[#2A2A2A] rounded-xl p-6 text-center"
-              >
-                <div className="inline-block p-3 bg-[#3A3A3A] rounded-lg mb-4">
-                  <value.icon className="w-6 h-6 text-purple-400" />
-                </div>
-                <h3 className="text-xl font-bold text-white mb-2">{value.title}</h3>
-                <p className="text-gray-400">{value.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Team Section */}
-        <section className="mb-24">
-          <h2 className="text-3xl font-bold text-white text-center mb-12">Our Team</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {team.map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-[#2A2A2A] rounded-xl p-6 text-center"
-              >
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-24 h-24 rounded-full mx-auto mb-4"
-                />
-                <h3 className="text-xl font-bold text-white mb-1">{member.name}</h3>
-                <p className="text-gray-400">{member.role}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Stats Section */}
-        <section className="text-center">
-          <h2 className="text-3xl font-bold text-white mb-12">Our Impact</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-[#2A2A2A] rounded-xl p-6"
+          <div className="flex justify-center gap-4">
+            <a
+              href="mailto:team@devsdocode.com"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
             >
-              <div className="text-4xl font-bold text-purple-400 mb-2">100K+</div>
-              <div className="text-gray-400">Active Developers</div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-[#2A2A2A] rounded-xl p-6"
+              <Mail className="w-5 h-5" />
+              Contact Us
+            </a>
+            <a
+              href="/projects"
+              className="px-6 py-3 bg-[#2A2A2A] text-white rounded-lg hover:bg-[#3A3A3A] transition-colors inline-flex items-center gap-2"
             >
-              <div className="text-4xl font-bold text-purple-400 mb-2">1M+</div>
-              <div className="text-gray-400">Code Snippets Generated</div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-[#2A2A2A] rounded-xl p-6"
-            >
-              <div className="text-4xl font-bold text-purple-400 mb-2">50+</div>
-              <div className="text-gray-400">Countries Reached</div>
-            </motion.div>
+              <Globe className="w-5 h-5" />
+              View Projects
+            </a>
           </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
+        </div>
+      </motion.div>
+    </motion.div>
   )
 }
