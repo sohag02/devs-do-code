@@ -182,7 +182,7 @@ export default function FreelancePage() {
       >
         <h2 className="text-2xl font-bold mb-4">Ready to Start Your Project?</h2>
         <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-          Let's discuss your project requirements and create something amazing together.
+          Let&apos;s discuss your project requirements and create something amazing together.
         </p>
         <div className="flex justify-center gap-4">
           <Button 
