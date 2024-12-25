@@ -1,13 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
+import { useSession } from '@/context/SessionContext'
 import { Search, Menu, Bot, Briefcase } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 export function Navbar() {
-  const { data: session } = useSession()
+  const { user } = useSession();
 
   return (
     <nav className="fixed top-0 w-full bg-[#1A1A1A] border-b border-[#2A2A2A] z-50">
@@ -65,9 +65,9 @@ export function Navbar() {
               <Briefcase className="w-4 h-4 mr-1" />
               Freelance
             </Link>
-            {session ? (
+            {user ? (
               <Button variant="outline" className="bg-[#2A2A2A] border-0 text-white hover:bg-[#3A3A3A] transition-colors">
-                Dashboard
+                <Link href="/dashboard">Dashboard</Link>
               </Button>
             ) : (
               <Button variant="outline" className="bg-[#2A2A2A] border-0 text-white hover:bg-[#3A3A3A] transition-colors">

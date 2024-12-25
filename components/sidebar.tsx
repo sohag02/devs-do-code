@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Brain, PlayCircle, FileText, DollarSign, Users, Mail, Settings, Github, Twitter, Instagram, Send } from 'lucide-react'
 import Link from 'next/link'
-import { useSession } from 'next-auth/react'
+import { useSession } from '@/context/SessionContext'
 
 const menuItemVariants = {
   hidden: { opacity: 0, x: -20 },
@@ -28,7 +28,7 @@ const socialLinks = [
 
 export function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false)
-  const { data: session } = useSession()
+  const { user } = useSession()
 
   const menuItems = [
     { icon: PlayCircle, label: 'Playground', className: 'text-green-400', href: '/playground' },
@@ -114,7 +114,7 @@ export function Sidebar() {
           {/* Footer */}
           <div className="mt-auto pt-4 border-t border-[#2A2A2A] space-y-4">
             {/* Settings */}
-            {session && (
+            {user && (
               <Link
                 href="/settings"
                 className="flex items-center gap-4 px-2 py-2 rounded-lg hover:bg-white/5 transition-colors group"
