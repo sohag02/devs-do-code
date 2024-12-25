@@ -6,12 +6,12 @@ import { useState, useEffect } from "react"
 import { Search, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useSession } from "next-auth/react"
+import { useSession } from "@/context/SessionContext"
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const { scrollY } = useScroll()
-  const { data: session } = useSession()
+  const { user } = useSession()
 
   const opacity = useTransform(scrollY, [0, 100], [0.8, 1])
   const blur = useTransform(scrollY, [0, 100], [0, 12])
@@ -70,7 +70,7 @@ export function Navbar() {
                 className="w-64 pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-400"
               />
             </div>
-            {session ? (
+            {user ? (
               <Button variant="outline" className="bg-white/5 hover:bg-white/10 border-white/10">
                 Dashboard
               </Button>

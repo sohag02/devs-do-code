@@ -4,6 +4,7 @@ import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import { Providers } from "@/components/providers"
 import { metadata } from "./metadata"
+import { SessionProvider } from "@/context/SessionContext";
 
 config.autoAddCss = false
 
@@ -27,9 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${grotesk.variable} ${syne.variable}`}>
       <body className={grotesk.className}>
-        <Providers>
+        <SessionProvider>
           {children}
-        </Providers>
+        </SessionProvider>
       </body>
     </html>
   )
