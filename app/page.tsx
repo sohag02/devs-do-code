@@ -1,176 +1,247 @@
-'use client'
+"use client"
 
-import { motion } from 'framer-motion'
-import { MessageSquare, Code2, Zap, Brain, ArrowRight, Sparkles, FileCode, GitBranch } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-}
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: [0.48, 0.15, 0.25, 0.96]
-    }
-  }
-}
-
-const features = [
-  {
-    icon: MessageSquare,
-    title: 'Interactive Chat',
-    description: 'Engage in natural conversations with our AI to solve coding challenges and debug issues.',
-    color: 'text-green-400',
-    bgColor: 'bg-green-400/10'
-  },
-  {
-    icon: Code2,
-    title: 'Code Editor',
-    description: 'Built-in code editor with syntax highlighting and real-time execution capabilities.',
-    color: 'text-blue-400',
-    bgColor: 'bg-blue-400/10'
-  },
-  {
-    icon: FileCode,
-    title: 'Multiple Languages',
-    description: 'Support for all major programming languages with intelligent code completion.',
-    color: 'text-purple-400',
-    bgColor: 'bg-purple-400/10'
-  },
-  {
-    icon: GitBranch,
-    title: 'Version Control',
-    description: 'Track changes and manage different versions of your code seamlessly.',
-    color: 'text-orange-400',
-    bgColor: 'bg-orange-400/10'
-  }
-]
-
-const stats = [
-  { label: 'Active Users', value: '10K+' },
-  { label: 'Code Executions', value: '1M+' },
-  { label: 'Languages Supported', value: '20+' },
-  { label: 'Response Time', value: '<1s' },
-]
+import { motion, useScroll, useTransform } from "framer-motion"
+import { useRef } from "react"
+import { useInView } from "react-intersection-observer"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faRocket, faArrowRight } from "@fortawesome/free-solid-svg-icons"
+import { faGithub, faTwitter, faDiscord } from "@fortawesome/free-brands-svg-icons"
+import { MessageSquare, Music, Image, Code, PenTool, BarChart3 } from "lucide-react"
+import { MouseGradient } from "@/components/mouse-gradient"
+import { AnimatedText } from "@/components/animated-text"
+import { GradientButton } from "@/components/gradient-button"
+import { AnimatedCard } from "@/components/animated-card"
+import { PricingCard } from "@/components/pricing-card"
+import { Navbar } from "@/components/navbar"
+import { ScrollingLogos } from "@/components/scrolling-logos"
+import { ModelsSection } from "@/components/models-section"
+import { FeaturesSection } from "@/components/features-section"
+import { TestimonialsSection } from "@/components/testimonials-section"
+import { CTASection } from "@/components/cta-section"
+import { ModelBadges } from "@/components/model-badges"
+import { fadeIn, staggerContainer, floatAnimation, glowAnimation } from "@/utils/animations"
 
 export default function Home() {
+  const { scrollY } = useScroll()
+  const scale = useTransform(scrollY, [0, 300], [1, 0.9])
+  const opacity = useTransform(scrollY, [0, 300], [1, 0])
+  const y = useTransform(scrollY, [0, 300], [0, 100])
+
+  const [featuresRef, featuresInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  })
+
   return (
-    <motion.div
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Hero Section */}
-      <motion.div variants={itemVariants} className="text-center mb-16">
-        <div className="flex justify-center mb-6">
-          <motion.div
-            className="p-3 bg-blue-500/10 rounded-xl"
-            whileHover={{ rotate: 360 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Brain className="w-12 h-12 text-blue-500" />
-          </motion.div>
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">
-          Code Smarter with AI
-        </h1>
-        <p className="text-xl text-gray-400 max-w-3xl mx-auto mb-8">
-          Experience the future of coding with our AI-powered playground. Write, debug, and optimize code faster than ever.
-        </p>
-        <div className="flex justify-center gap-4">
-          <Button 
-            size="lg"
-            className="bg-blue-600 hover:bg-blue-700"
-          >
-            Try Playground
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
-          <Button 
-            size="lg"
-            variant="outline"
-            className="bg-[#2A2A2A] border-[#3A3A3A] hover:bg-[#3A3A3A]"
-          >
-            View Documentation
-          </Button>
-        </div>
-      </motion.div>
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      <Navbar />
+      <MouseGradient>
+        {/* Hero Section */}
+        <motion.div
+          style={{
+            scale,
+            opacity,
+            y,
+          }}
+          className="relative min-h-screen flex items-center justify-center px-4"
+        >
+          <div className="relative z-10 max-w-5xl mx-auto text-center">
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="space-y-8"
+            >
+              <motion.div variants={fadeIn("up", 0.2)}>
+                <AnimatedText
+                  title="Chat with Multiple"
+                  textStyles="text-6xl md:text-7xl font-bold mb-2"
+                />
+                <AnimatedText
+                  title="AI Models"
+                  textStyles="text-6xl md:text-7xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text"
+                />
+              </motion.div>
 
-      {/* Stats Section */}
-      <motion.div variants={itemVariants} className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
-        {stats.map((stat, index) => (
-          <div key={index} className="text-center">
-            <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
-            <div className="text-gray-400">{stat.label}</div>
+              <motion.p
+                variants={fadeIn("up", 0.4)}
+                className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto"
+              >
+                Access GPT-4, Claude, and Gemini Pro all in one place. Compare responses and choose the best AI for your needs.
+              </motion.p>
+
+              <motion.div
+                variants={fadeIn("up", 0.6)}
+                className="flex flex-col sm:flex-row gap-4 justify-center"
+              >
+                <GradientButton
+                  text="Start Chatting Free"
+                  icon={faRocket}
+                  variant="primary"
+                />
+                <GradientButton
+                  text="View Pricing"
+                  icon={faArrowRight}
+                  variant="outline"
+                />
+              </motion.div>
+
+              {/* Trust Badge */}
+              <ModelBadges />
+
+              
+            </motion.div>
           </div>
-        ))}
-      </motion.div>
+        </motion.div>
 
-      {/* Features Grid */}
-      <motion.div variants={itemVariants} className="grid md:grid-cols-2 gap-8 mb-16">
-        {features.map((feature, index) => (
-          <motion.div
-            key={index}
-            className="bg-[#2A2A2A] rounded-2xl p-8 border border-[#3A3A3A] hover:border-blue-500/50 transition-colors"
-            variants={itemVariants}
-            whileHover={{ y: -5 }}
-          >
-            <div className={`p-3 ${feature.bgColor} rounded-xl w-fit mb-4`}>
-              <feature.icon className={`w-6 h-6 ${feature.color}`} />
+        {/* Scrolling Logos */}
+        <ScrollingLogos />
+        
+        <ModelsSection />
+        
+        <FeaturesSection />
+        
+        <TestimonialsSection />
+        
+        <CTASection />
+
+        <div className="pd-up-1"></div>
+
+        {/* Footer */}
+        <footer className="bg-black border-t border-gray-800 py-16">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div>
+                <motion.div
+                  variants={fadeIn("up", 0)}
+                  initial="hidden"
+                  animate="visible"
+                  className="flex items-center gap-2 mb-6"
+                >
+                  <span className="text-2xl font-bold">Devs Do Code</span>
+                </motion.div>
+                <motion.p
+                  variants={fadeIn("up", 0.2)}
+                  initial="hidden"
+                  animate="visible"
+                  className="text-gray-400"
+                >
+                  The ultimate AI chat platform for developers and creators.
+                </motion.p>
+                <motion.div
+                  variants={fadeIn("up", 0.4)}
+                  initial="hidden"
+                  animate="visible"
+                  className="flex gap-4 mt-6"
+                >
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    <FontAwesomeIcon icon={faGithub} className="w-6 h-6" />
+                  </a>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    <FontAwesomeIcon icon={faTwitter} className="w-6 h-6" />
+                  </a>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    <FontAwesomeIcon icon={faDiscord} className="w-6 h-6" />
+                  </a>
+                </motion.div>
+              </div>
+              
+              <div>
+                <motion.h3
+                  variants={fadeIn("up", 0.2)}
+                  initial="hidden"
+                  animate="visible"
+                  className="font-bold mb-4"
+                >
+                  Product
+                </motion.h3>
+                <motion.ul
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                  className="space-y-2"
+                >
+                  {["Features", "Pricing", "API"].map((item, index) => (
+                    <motion.li
+                      key={item}
+                      variants={fadeIn("up", 0.3 + index * 0.1)}
+                    >
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                        {item}
+                      </a>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              </div>
+
+              <div>
+                <motion.h3
+                  variants={fadeIn("up", 0.2)}
+                  initial="hidden"
+                  animate="visible"
+                  className="font-bold mb-4"
+                >
+                  Company
+                </motion.h3>
+                <motion.ul
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                  className="space-y-2"
+                >
+                  {["About", "Blog", "Careers"].map((item, index) => (
+                    <motion.li
+                      key={item}
+                      variants={fadeIn("up", 0.3 + index * 0.1)}
+                    >
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                        {item}
+                      </a>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              </div>
+
+              <div>
+                <motion.h3
+                  variants={fadeIn("up", 0.2)}
+                  initial="hidden"
+                  animate="visible"
+                  className="font-bold mb-4"
+                >
+                  Legal
+                </motion.h3>
+                <motion.ul
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                  className="space-y-2"
+                >
+                  {["Privacy", "Terms", "Security"].map((item, index) => (
+                    <motion.li
+                      key={item}
+                      variants={fadeIn("up", 0.3 + index * 0.1)}
+                    >
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                        {item}
+                      </a>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              </div>
             </div>
-            <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-            <p className="text-gray-400">{feature.description}</p>
-          </motion.div>
-        ))}
-      </motion.div>
 
-      {/* Demo Section */}
-      <motion.div variants={itemVariants} className="mb-16">
-        <div className="bg-[#2A2A2A] rounded-2xl p-8 border border-[#3A3A3A]">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Interactive Playground</h2>
-            <Sparkles className="w-6 h-6 text-yellow-400" />
+            <motion.div
+              variants={fadeIn("up", 0.6)}
+              initial="hidden"
+              animate="visible"
+              className="mt-16 pt-8 border-t border-gray-800 text-center text-gray-400"
+            >
+              <p> 2024 Devs Do Code. All rights reserved.</p>
+            </motion.div>
           </div>
-          <div className="aspect-video bg-[#1A1A1A] rounded-lg">
-            {/* Add interactive demo or video here */}
-          </div>
-        </div>
-      </motion.div>
-
-      {/* CTA Section */}
-      <motion.div variants={itemVariants} className="text-center">
-        <h2 className="text-2xl font-bold mb-6">Ready to Start Coding?</h2>
-        <p className="text-gray-400 mb-8">
-          Join thousands of developers who are already coding smarter with our AI-powered playground.
-        </p>
-        <div className="flex justify-center gap-4">
-          <Button 
-            size="lg"
-            className="bg-blue-600 hover:bg-blue-700"
-          >
-            Get Started Free
-            <Zap className="ml-2 h-5 w-5" />
-          </Button>
-          <Button 
-            size="lg"
-            variant="outline"
-            className="bg-[#2A2A2A] border-[#3A3A3A] hover:bg-[#3A3A3A]"
-          >
-            View Pricing
-          </Button>
-        </div>
-      </motion.div>
-    </motion.div>
+        </footer>
+      </MouseGradient>
+    </div>
   )
 }

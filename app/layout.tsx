@@ -1,19 +1,23 @@
-import type { Metadata } from "next"
-// import { GeistSans } from 'geist/font/sans'
-// import { GeistMono } from 'geist/font/mono'
-import { Providers } from "@/components/providers"
-// import dynamic from 'next/dynamic'
+import { Space_Grotesk, Syne } from "next/font/google"
 import "./globals.css"
-import { Navbar } from "@/components/navbar"
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+import { Providers } from "@/components/providers"
+import { metadata } from "./metadata"
 
-// const Navbar = dynamic(() => import('@/components/navbar').then(mod => mod.Navbar), {
-//   ssr: false
-// })
+config.autoAddCss = false
 
-export const metadata: Metadata = {
-  title: "Devs Do Code",
-  description: "A collaborative platform for developers to code, learn, and build together",
-}
+const grotesk = Space_Grotesk({ 
+  subsets: ["latin"],
+  variable: "--font-grotesk",
+})
+
+const syne = Syne({
+  subsets: ["latin"],
+  variable: "--font-syne",
+})
+
+export { metadata }
 
 export default function RootLayout({
   children,
@@ -21,10 +25,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={` bg-[#121212] text-white antialiased`}>
+    <html lang="en" className={`${grotesk.variable} ${syne.variable}`}>
+      <body className={grotesk.className}>
         <Providers>
-          <Navbar />
           {children}
         </Providers>
       </body>
