@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef } from "react"
+// import { useRef } from "react"
 import { useInView } from "react-intersection-observer"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faRocket, faArrowRight } from "@fortawesome/free-solid-svg-icons"
@@ -20,6 +20,7 @@ import { TestimonialsSection } from "@/components/testimonials-section"
 import { CTASection } from "@/components/cta-section"
 import { ModelBadges } from "@/components/model-badges"
 import { fadeIn, staggerContainer, floatAnimation, glowAnimation } from "@/utils/animations"
+import Link from "next/link"
 
 export default function Home() {
   const { scrollY } = useScroll()
@@ -74,11 +75,13 @@ export default function Home() {
                 variants={fadeIn("up", 0.6)}
                 className="flex flex-col sm:flex-row gap-4 justify-center"
               >
-                <GradientButton
-                  text="Start Chatting Free"
-                  icon={faRocket}
-                  variant="primary"
-                />
+                <Link href='/playground' >
+                  <GradientButton
+                    text="Start Chatting Free"
+                    icon={faRocket}
+                    variant="primary"
+                  />
+                </Link>
                 <GradientButton
                   text="View Pricing"
                   icon={faArrowRight}
