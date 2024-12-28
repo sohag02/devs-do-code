@@ -147,7 +147,7 @@ export function MessageInput({
         onKeyDown={handleKeyDown}
         placeholder="Type your message..."
         className={`${
-          attachments.length > 0 ? "rounded-t-none" : "rounded-t-3xl"
+          (attachments.length > 0 || uploadQueue.length > 0) ? "rounded-t-none" : "rounded-t-3xl"
         } resize-none rounded-b-none p-4 bg-[#2F2F2F] text-white  overflow-hidden transition-height duration-200 border-none`}
       />
       <div className="bottom-2 p-2 rounded-b-3xl bg-[#2F2F2F] px-4 flex items-center justify-between w-full">
