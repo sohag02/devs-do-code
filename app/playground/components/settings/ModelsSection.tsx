@@ -54,8 +54,8 @@ export function ModelsSection({ models }: ModelsSectionProps) {
                 .filter((model) => model.category === category)
                 .map((model) => (
                   <Tab
-                    key={model.id}
-                    value={model.id}
+                    key={model.model_id}
+                    value={model.model_id}
                     title={
                       <div className="flex text-xs items-center justify-start space-x-1">
                         <span>{model.name}</span>
@@ -90,8 +90,8 @@ export function ModelsSection({ models }: ModelsSectionProps) {
               .filter((model) => !categories.includes(model.category))
               .map((model) => (
                 <Tab
-                  key={model.id}
-                  value={model.id}
+                  key={model.model_id}
+                  value={model.model_id}
                   title={
                     <div className="flex text-xs items-center justify-start space-x-1">
                       <span>{model.name}</span>
