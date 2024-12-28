@@ -1,18 +1,25 @@
 "use client";
 
-import { useChat } from "ai/react";
-import { useState, useRef, useEffect } from "react";
-import { Loader2, RotateCcw } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import MarkdownRenderer from "./MarkdownRenderer";
-import { MessageInput } from "./ChatInput";
 import { Button } from "@/components/ui/button";
-import { Attachment } from "ai";
-import { PreviewAttachment } from "./PreviewAttachment";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import useModelStore from "@/context/useModelStore";
 import useSettingsStore from "@/context/useSettingsStore";
+import useVoiceStore from "@/context/useVoiceStore";
+import { Attachment } from "ai";
+import { useChat } from "ai/react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Copy,
+  Loader2,
+  RotateCcw,
+  Volume2,
+  StopCircle,
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { MessageInput } from "./ChatInput";
+import MarkdownRenderer from "./MarkdownRenderer";
+import { PreviewAttachment } from "./PreviewAttachment";
 
 interface ChatInterfaceProps {
   initialMessage: string | null;
@@ -21,6 +28,48 @@ interface ChatInterfaceProps {
 export default function Chat({ initialMessage }: ChatInterfaceProps) {
   const { modelId } = useModelStore();
   const { temperature, topP, topK, customInstructions } = useSettingsStore();
+  const { voiceId } = useVoiceStore();
+  const [isGeneratingVoice, setIsGeneratingVoice] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+
+  const handlePlay = async (text: string) => {
+    setIsGeneratingVoice(true);
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/audio/speech`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "DeepGram-v1",
+          voice: voiceId,
+          input: text,
+        }),
+        credentials: "include",
+      }
+    );
+    const audioData = await res.json();
+    const newAudio = new Audio(
+      `data:audio/wav;base64,${audioData.audio_content}`
+    );
+    setAudio(newAudio);
+    setIsGeneratingVoice(false);
+    setIsPlaying(true);
+    newAudio.play();
+    newAudio.onended = () => {
+      setIsPlaying(false);
+    };
+  };
+
+  const stopAudio = () => {
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    setIsPlaying(false);
+  };
 
   const {
     messages,
@@ -56,11 +105,20 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
             topP: topP,
             topK: topK,
             customInstructions: customInstructions,
-          }
+          },
         }
       );
     }
-  }, [append, customInstructions, initialMessage, messages.length, modelId, temperature, topK, topP]);
+  }, [
+    append,
+    customInstructions,
+    initialMessage,
+    messages.length,
+    modelId,
+    temperature,
+    topK,
+    topP,
+  ]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -91,7 +149,7 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
         topP: topP,
         topK: topK,
         customInstructions: customInstructions,
-      }
+      },
     });
   };
 
@@ -140,7 +198,46 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
                   {m.role === "user" ? (
                     m.content
                   ) : (
-                    <MarkdownRenderer content={m.content} />
+                    <>
+                      <MarkdownRenderer content={m.content} />
+                      {/* actions */}
+                      <div className="flex flex-row gap-2">
+                        <Button
+                          size="icon"
+                          variant={"ghost"}
+                          className="hover:bg-[#2A2A2A]"
+                          onClick={() =>
+                            navigator.clipboard.writeText(m.content)
+                          }
+                        >
+                          <Copy className="w-4 h-4 text-white" />
+                        </Button>
+                        {!isPlaying ? (
+                          <Button
+                            size="icon"
+                            variant={"ghost"}
+                            className="hover:bg-[#2A2A2A]"
+                            disabled={isGeneratingVoice}
+                            onClick={() => handlePlay(m.content)}
+                          >
+                            {isGeneratingVoice ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Volume2 className="w-4 h-4 text-white" />
+                            )}
+                          </Button>
+                        ) : (
+                          <Button
+                            size="icon"
+                            variant={"ghost"}
+                            className="hover:bg-[#2A2A2A]"
+                            onClick={stopAudio}
+                          >
+                            <StopCircle className="w-4 h-4 text-red-400" />
+                          </Button>
+                        )}
+                      </div>
+                    </>
                   )}
                 </div>
               </div>

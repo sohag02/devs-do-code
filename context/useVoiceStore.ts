@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-interface ModelState {
+interface VoiceState {
   voiceId: string
   setVoiceID: (modelId: string) => void
 }
 
-const useModelStore = create<ModelState>()(
+const useVoiceStore = create<VoiceState>()(
   persist(
     (set) => ({
       voiceId: 'aura-luna-en',
@@ -18,4 +18,4 @@ const useModelStore = create<ModelState>()(
   )
 )
 
-export default useModelStore
+export default useVoiceStore

@@ -12,7 +12,6 @@ export function VoiceSection({ voices }: VoiceSectionProps) {
   const { voiceId, setVoiceID } = useVoiceStore();
 
   const handlePlaySample = async (voiceId: string, text: string) => {
-    console.log(`Playing sample for voice ID: ${voiceId}`);
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/audio/speech`,
       {
@@ -31,7 +30,6 @@ export function VoiceSection({ voices }: VoiceSectionProps) {
     const audioData = await res.json(); // Assuming the response is plain text with base64 data
     const audio = new Audio(`data:audio/wav;base64,${audioData.audio_content}`);
     audio.play();
-    console.log(res);
   };
 
   return (
