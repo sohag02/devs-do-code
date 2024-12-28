@@ -1,5 +1,5 @@
-import { createOpenAI } from '@ai-sdk/openai';
-import { streamText } from 'ai';
+import { createOpenAI } from "@ai-sdk/openai";
+import { streamText } from "ai";
 
 const openai = createOpenAI({
   apiKey: process.env.API_KEY,
@@ -10,20 +10,25 @@ const openai = createOpenAI({
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, model, temperature, topP, topK, customInstructions } =
+    await req.json();
 
   const result = streamText({
-    model: openai('claude-3-5-sonnet-20240620'),
+    model: openai(model),
     messages,
+    temperature: temperature,
+    topP: topP,
+    topK: topK,
+    system: customInstructions,
   });
 
   return result.toDataStreamResponse({
-    getErrorMessage: error => {
+    getErrorMessage: (error) => {
       if (error == null) {
-        return 'unknown error';
+        return "unknown error";
       }
 
-      if (typeof error === 'string') {
+      if (typeof error === "string") {
         return error;
       }
 

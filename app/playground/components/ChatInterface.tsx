@@ -11,12 +11,17 @@ import { MessageInput } from "./ChatInput";
 import { Button } from "@/components/ui/button";
 import { Attachment } from "ai";
 import { PreviewAttachment } from "./PreviewAttachment";
+import useModelStore from "@/context/useModelStore";
+import useSettingsStore from "@/context/useSettingsStore";
 
 interface ChatInterfaceProps {
   initialMessage: string | null;
 }
 
 export default function Chat({ initialMessage }: ChatInterfaceProps) {
+  const { modelId } = useModelStore();
+  const { temperature, topP, topK, customInstructions } = useSettingsStore();
+
   const {
     messages,
     input,
@@ -28,6 +33,7 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
     error,
     reload,
   } = useChat();
+
   const [isMounted, setIsMounted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -38,12 +44,23 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
   useEffect(() => {
     // Send the initial message when the component mounts
     if (messages.length === 0 && initialMessage) {
-      append({
-        role: "user",
-        content: initialMessage,
-      });
+      append(
+        {
+          role: "user",
+          content: initialMessage,
+        },
+        {
+          body: {
+            model: modelId,
+            temperature: temperature,
+            topP: topP,
+            topK: topK,
+            customInstructions: customInstructions,
+          }
+        }
+      );
     }
-  }, [append, initialMessage, messages.length]);
+  }, [append, customInstructions, initialMessage, messages.length, modelId, temperature, topK, topP]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -68,6 +85,13 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
     });
     handleSubmit(e, {
       experimental_attachments: newFiles,
+      body: {
+        model: modelId,
+        temperature: temperature,
+        topP: topP,
+        topK: topK,
+        customInstructions: customInstructions,
+      }
     });
   };
 
