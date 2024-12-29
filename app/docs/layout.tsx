@@ -1,34 +1,38 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ChevronDown } from 'lucide-react'
+import { ChevronRight, Search } from 'lucide-react'
 
-const sections = [
+const sidebarSections = [
   {
-    title: 'Getting Started',
+    title: 'GET STARTED',
     items: [
       { title: 'Introduction', href: '/docs' },
-      { title: 'Authentication', href: '/docs/authentication' },
       { title: 'Quickstart', href: '/docs/quickstart' },
+      { title: 'Authentication', href: '/docs/authentication' },
+      { title: 'Models', href: '/docs/models' },
     ]
   },
   {
-    title: 'API Reference',
+    title: 'GUIDES',
     items: [
-      { title: 'Chat Endpoints', href: '/docs/api/chat' },
-      { title: 'Code Analysis', href: '/docs/api/code-analysis' },
-      { title: 'Code Generation', href: '/docs/api/code-generation' },
+      { title: 'Text Generation', href: '/docs/text-generation' },
+      { title: 'Code Generation', href: '/docs/code-generation' },
+      { title: 'Best Practices', href: '/docs/best-practices' },
+      { title: 'Rate Limits', href: '/docs/rate-limits' },
+      { title: 'Error Handling', href: '/docs/error-handling' },
     ]
   },
   {
-    title: 'Guides',
+    title: 'API REFERENCE',
     items: [
-      { title: 'Best Practices', href: '/docs/guides/best-practices' },
-      { title: 'Rate Limits', href: '/docs/guides/rate-limits' },
-      { title: 'Error Handling', href: '/docs/guides/error-handling' },
+      { title: 'Authentication', href: '/docs/api/authentication' },
+      { title: 'Models', href: '/docs/api/models' },
+      { title: 'Chat', href: '/docs/api/chat' },
+      { title: 'Code', href: '/docs/api/code' },
+      { title: 'Embeddings', href: '/docs/api/embeddings' },
     ]
   }
 ]
@@ -39,71 +43,58 @@ export default function DocsLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-  const [openSection, setOpenSection] = useState<string | null>(null)
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left sidebar */}
-      <div className="w-64 border-r border-[#2A2A2A] p-6 hidden md:block">
-        <nav className="space-y-6">
-          {sections.map((section) => (
-            <div key={section.title} className="space-y-2">
-              <button
-                onClick={() => setOpenSection(openSection === section.title ? null : section.title)}
-                className="flex items-center justify-between w-full text-sm font-semibold text-gray-400 hover:text-white"
-              >
+    <div className="min-h-screen bg-[#1A1A1A]">
+      {/* Fixed Sidebar */}
+      <div className="fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] border-r border-[#2A2A2A] bg-[#1A1A1A] overflow-y-auto">
+        {/* Search */}
+        <div className="p-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="search"
+              placeholder="Search docs..."
+              className="w-full pl-10 pr-4 py-2 bg-[#2A2A2A] border-0 rounded-lg text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="px-4 pb-4">
+          {sidebarSections.map((section, index) => (
+            <div key={index} className="mb-8">
+              <h3 className="text-xs font-semibold text-gray-400 mb-4 px-4">
                 {section.title}
-                <motion.div
-                  animate={{ rotate: openSection === section.title ? 180 : 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <ChevronDown className="w-4 h-4" />
-                </motion.div>
-              </button>
-              <motion.div
-                initial={false}
-                animate={{
-                  height: openSection === section.title ? 'auto' : 0,
-                  opacity: openSection === section.title ? 1 : 0
-                }}
-                transition={{ duration: 0.2 }}
-                className="overflow-hidden"
-              >
-                <div className="pl-2 space-y-1 pt-1">
-                  {section.items.map((item) => (
+              </h3>
+              <ul className="space-y-1">
+                {section.items.map((item, itemIndex) => (
+                  <li key={itemIndex}>
                     <Link
-                      key={item.href}
                       href={item.href}
-                      className={`block py-1 text-sm transition-colors ${
+                      className={`flex items-center justify-between px-4 py-2 rounded-lg text-sm hover:bg-[#2A2A2A] transition-colors ${
                         pathname === item.href
-                          ? 'text-white font-medium'
-                          : 'text-gray-400 hover:text-white'
+                          ? 'text-blue-400 bg-blue-500/10'
+                          : 'text-gray-300 hover:text-white'
                       }`}
                     >
                       {item.title}
+                      {pathname === item.href && (
+                        <ChevronRight className="w-4 h-4" />
+                      )}
                     </Link>
-                  ))}
-                </div>
-              </motion.div>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </nav>
       </div>
 
-      {/* Main content */}
-      <main className="flex-1 overflow-auto">
-        <div className="max-w-4xl mx-auto px-6 py-12">
-          {children}
-        </div>
+      {/* Main Content */}
+      <main className="ml-64 min-h-screen">
+        {children}
       </main>
-
-      {/* Right sidebar for on-page navigation (optional) */}
-      <div className="w-64 border-l border-[#2A2A2A] p-6 hidden lg:block">
-        <div className="sticky top-6">
-          <h4 className="font-medium text-sm mb-4 text-gray-400">On this page</h4>
-          {/* Add on-page navigation here */}
-        </div>
-      </div>
     </div>
   )
 }

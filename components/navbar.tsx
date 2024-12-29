@@ -7,11 +7,13 @@ import { Search, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useSession } from "@/context/SessionContext"
+import { useRouter } from 'next/navigation'
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const { scrollY } = useScroll()
   const { user } = useSession()
+  const router = useRouter()
 
   const opacity = useTransform(scrollY, [0, 100], [0.8, 1])
   const blur = useTransform(scrollY, [0, 100], [0, 12])
@@ -71,13 +73,31 @@ export function Navbar() {
               />
             </div>
             {user ? (
-              <Button variant="outline" className="bg-white/5 hover:bg-white/10 border-white/10">
-                Dashboard
-              </Button>
+              <div className="flex gap-2">
+                <Link href="/dashboard">
+                  <Button variant="outline" className="bg-white/5 hover:bg-white/10 border-white/10">
+                    Dashboard
+                  </Button>
+                </Link>
+                <Link href="/api/auth/signout">
+                  <Button variant="outline" className="bg-white/5 hover:bg-white/10 border-white/10">
+                    Sign Out
+                  </Button>
+                </Link>
+              </div>
             ) : (
-              <Button variant="outline" className="bg-white/5 hover:bg-white/10 border-white/10">
-                Sign In
-              </Button>
+              <div className="flex gap-2">
+                <Link href="/auth/signin">
+                  <Button variant="outline" className="bg-white/5 hover:bg-white/10 border-white/10">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/dashboard">
+                  <Button variant="outline" className="bg-white/5 hover:bg-white/10 border-white/10">
+                    Dashboard
+                  </Button>
+                </Link>
+              </div>
             )}
           </div>
 
