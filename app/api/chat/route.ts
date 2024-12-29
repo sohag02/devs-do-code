@@ -7,8 +7,9 @@ import {
   convertToCoreMessages,
 } from "ai";
 import { saveMessage, getChatById } from "@/db/queries";
+import { type TextPart } from "ai";
 
-export function getMostRecentUserMessage(messages: Array<CoreMessage>) {
+function getMostRecentUserMessage(messages: Array<CoreMessage>) {
   const userMessages = messages.filter((message) => message.role === "user");
   return userMessages.at(-1);
 }
@@ -70,9 +71,10 @@ export async function POST(req: Request) {
     topK: topK,
     system: customInstructions,
     onFinish: async (text) => {
+      const content = text.response.messages[0].content[0] as TextPart;
       await saveMessage({
         role: "assistant",
-        content: text.response.messages[0].content[0].text,
+        content: content.text,
         chatId: chatId,
       });
     },
