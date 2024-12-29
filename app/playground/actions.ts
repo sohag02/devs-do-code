@@ -1,4 +1,22 @@
 'use server'
+import { Chats } from "@/db/schema";
+import { db } from "@/db";
+import { eq } from "drizzle-orm";
+
+export async function createChat(userId: string, title: string, chatId: string) {
+  await db.insert(Chats).values({
+    id: chatId,
+    userId: userId,
+    title: title,
+  })
+}
+
+export async function fetchChats(userId: string) {
+  const chats = await db.query.Chats.findMany({
+    where: eq(Chats.userId, userId),
+  })
+  return chats
+}
 
 export interface Model {
     category:   string;

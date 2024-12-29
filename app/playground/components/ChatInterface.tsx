@@ -9,29 +9,34 @@ import useVoiceStore from "@/context/useVoiceStore";
 import { Attachment } from "ai";
 import { useChat } from "ai/react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  Copy,
-  Loader2,
-  RotateCcw,
-  Volume2,
-  StopCircle,
-} from "lucide-react";
+import { Copy, Loader2, RotateCcw, Volume2, StopCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MessageInput } from "./ChatInput";
 import MarkdownRenderer from "./MarkdownRenderer";
 import { PreviewAttachment } from "./PreviewAttachment";
+import { useSession } from "@/context/SessionContext";
+import { useSWRConfig } from "swr";
+import { type Message } from "@/db/queries";
 
 interface ChatInterfaceProps {
-  initialMessage: string | null;
+  firstMessage?: string;
+  initialMessage?: Message[];
+  chatId: string;
 }
 
-export default function Chat({ initialMessage }: ChatInterfaceProps) {
+export default function Chat({
+  firstMessage,
+  initialMessage,
+  chatId,
+}: ChatInterfaceProps) {
   const { modelId } = useModelStore();
   const { temperature, topP, topK, customInstructions } = useSettingsStore();
   const { voiceId } = useVoiceStore();
   const [isGeneratingVoice, setIsGeneratingVoice] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const { user } = useSession();
+  const { mutate } = useSWRConfig();
 
   const handlePlay = async (text: string) => {
     setIsGeneratingVoice(true);
@@ -81,7 +86,16 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
     append,
     error,
     reload,
-  } = useChat();
+  } = useChat({
+    onFinish: () => {
+      mutate(`/api/history?id=${user?.userid}`);
+    },
+    initialMessages: initialMessage?.map((msg) => ({
+      ...msg,
+      id: String(msg.id),
+      createdAt: new Date(msg.createdAt),
+    })),
+  });
 
   const [isMounted, setIsMounted] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -92,11 +106,11 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
 
   useEffect(() => {
     // Send the initial message when the component mounts
-    if (messages.length === 0 && initialMessage) {
+    if (messages.length === 0 && firstMessage) {
       append(
         {
           role: "user",
-          content: initialMessage,
+          content: firstMessage,
         },
         {
           body: {
@@ -105,12 +119,15 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
             topP: topP,
             topK: topK,
             customInstructions: customInstructions,
+            chatId: chatId,
+            userId: user?.userid,
           },
         }
       );
     }
   }, [
     append,
+    chatId,
     customInstructions,
     initialMessage,
     messages.length,
@@ -118,6 +135,7 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
     temperature,
     topK,
     topP,
+    user?.userid,
   ]);
 
   useEffect(() => {
@@ -149,6 +167,8 @@ export default function Chat({ initialMessage }: ChatInterfaceProps) {
         topP: topP,
         topK: topK,
         customInstructions: customInstructions,
+        chatId: chatId,
+        userId: user?.userid,
       },
     });
   };
