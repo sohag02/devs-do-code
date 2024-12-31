@@ -64,3 +64,22 @@ export async function getMessagesByChatId({ id }: { id: string }) {
   }
 }
 
+export async function deleteChatById({ id }: { id: string }) {
+  try {
+    await db.delete(Messages).where(eq(Messages.chatId, id));
+
+    return await db.delete(Chats).where(eq(Chats.id, id));
+  } catch (error) {
+    console.error('Failed to delete chat by id from database');
+    throw error;
+  }
+}
+
+export async function renameChatById({ id, newTitle }: { id: string; newTitle: string }) {
+  try {
+    await db.update(Chats).set({ title: newTitle }).where(eq(Chats.id, id));
+  } catch (error) {
+    console.error('Failed to rename chat by id from database');
+    throw error;
+  }
+}
