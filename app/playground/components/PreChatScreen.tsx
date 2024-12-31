@@ -8,10 +8,62 @@ import {
   FileText,
   Lightbulb,
   ChevronDown,
+  ChevronUp,
   Settings,
+  Code2,
+  PenLine,
 } from "lucide-react";
 import { MessageInput } from "./ChatInput";
 import { Attachment } from "ai";
+
+interface suggestion {
+  title: string;
+  input: string;
+  icon: React.ReactNode;
+}
+
+const suggestions: suggestion[] = [
+  {
+    title: "Generate image",
+    input: "Generate an image of a ",
+    icon: <ImageIcon className="w-4 h-4 mr-2 text-green-400" />,
+  },
+  {
+    title: "Explain concept",
+    input: "Explain the following concept: ",
+    icon: <Lightbulb className="w-4 h-4 mr-2 text-purple-400" />,
+  },
+  {
+    title: "Code",
+    input: "Write code for ",
+    icon: <Code2 className="w-4 h-4 mr-2 text-blue-400" />,
+  },
+  {
+    title: "Summarize",
+    input: "Summarize the following text: ",
+    icon: <FileText className="w-4 h-4 mr-2 text-orange-400" />,
+  },
+  {
+    title: "Brainstorm",
+    input: "Brainstorm ideas for ",
+    icon: <Lightbulb className="w-4 h-4 mr-2 text-orange-400" />,
+  },
+  {
+    title: "Make a plan",
+    input: "Make a plan to ",
+    icon: <Lightbulb className="w-4 h-4 mr-2 text-blue-400" />,
+  },
+  {
+    title: "Web search",
+    input: "Search the web for ",
+    icon: <Search className="w-4 h-4 mr-2 text-purple-400" />,
+  },
+  {
+    title: "Help me write",
+    input: "Help me write ",
+    icon: <PenLine className="w-4 h-4 mr-2 text-green-400" />,
+  },
+];
 
 interface PreChatScreenProps {
   setChatStarted: (value: boolean) => void;
@@ -23,6 +75,7 @@ export function PreChatScreen({
   setInitialMessage,
 }: PreChatScreenProps) {
   const [input, setInput] = useState("");
+  const [showMore, setShowMore] = useState(false);
 
   const handleSubmit = (
     e:
@@ -42,7 +95,6 @@ export function PreChatScreen({
           What can I help with?
         </h1>
         <div className="w-full space-y-6">
-
           <MessageInput
             input={input}
             handleInputChange={(e) => setInput(e.target.value)}
@@ -51,41 +103,36 @@ export function PreChatScreen({
             stop={() => {}}
           />
 
-          <div className="flex flex-wrap gap-2 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center min-h-20">
+            {suggestions
+              .slice(0, showMore ? suggestions.length : 4)
+              .map((suggestion, index) => (
+                <Button
+                  variant="outline"
+                  className="bg-[#2A2A2A] border-0 rounded-full text-white hover:bg-[#3A3A3A]"
+                  key={index}
+                  onClick={() => {
+                    setInput(suggestion.input);
+                  }}
+                >
+                  {suggestion.icon}
+                  {suggestion.title}
+                </Button>
+              ))}
             <Button
               variant="outline"
-              className="bg-[#2A2A2A] border-0 text-white hover:bg-[#3A3A3A]"
+              className="bg-[#2A2A2A] border-0 rounded-full text-white hover:bg-[#3A3A3A]"
+              onClick={() => setShowMore(!showMore)}
             >
-              <ImageIcon className="w-4 h-4 mr-2 text-green-400" />
-              Generate image
-            </Button>
-            <Button
-              variant="outline"
-              className="bg-[#2A2A2A] border-0 text-white hover:bg-[#3A3A3A]"
-            >
-              <Search className="w-4 h-4 mr-2 text-blue-400" />
-              Web search
-            </Button>
-            <Button
-              variant="outline"
-              className="bg-[#2A2A2A] border-0 text-white hover:bg-[#3A3A3A]"
-            >
-              <FileText className="w-4 h-4 mr-2 text-orange-400" />
-              Summarize
-            </Button>
-            <Button
-              variant="outline"
-              className="bg-[#2A2A2A] border-0 text-white hover:bg-[#3A3A3A]"
-            >
-              <Lightbulb className="w-4 h-4 mr-2 text-purple-400" />
-              Explain concept
-            </Button>
-            <Button
-              variant="outline"
-              className="bg-[#2A2A2A] border-0 text-white hover:bg-[#3A3A3A]"
-            >
-              <ChevronDown className="w-4 h-4 mr-2" />
-              more
+              {showMore ? (
+                <>
+                  <ChevronUp className="w-4 h-4" /> Less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4" /> More
+                </>
+              )}
             </Button>
           </div>
         </div>
