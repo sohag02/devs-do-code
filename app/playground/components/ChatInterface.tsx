@@ -1,6 +1,5 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import useModelStore from "@/context/useModelStore";
@@ -18,34 +17,8 @@ import { useSession } from "@/context/SessionContext";
 import { useSWRConfig } from "swr";
 import { type Message } from "@/db/queries";
 import CopyButton from "@/components/copy-button";
-import {
-  SiOpenai,
-  SiAnthropic,
-  SiGoogle,
-  SiMeta,
-} from "@icons-pack/react-simple-icons";
-
-function ProviderIcon({
-  provider,
-  size = 24,
-  color = "currentColor",
-}: {
-  provider: string;
-  size?: number;
-  color?: string;
-}) {
-  if (provider === "OpenAI") {
-    return <SiOpenai size={size} color={color} />;
-  } else if (provider === "Anthropic") {
-    return <SiAnthropic size={size} color={color} />;
-  } else if (provider === "Google") {
-    return <SiGoogle size={size} color={color} />;
-  } else if (provider === "Meta") {
-    return <SiMeta size={size} color={color} />;
-  } else {
-    return <SiOpenai size={size} color={color} />;
-  }
-}
+import { ThinkingMessage } from "./ThinkingMessage";
+import ProviderIcon from "./ProviderIcon";
 
 interface ChatInterfaceProps {
   firstMessage?: string;
@@ -295,6 +268,13 @@ export default function Chat({
                 </div>
               </motion.div>
             ))}
+
+            {isLoading &&
+              messages.length > 0 &&
+              messages[messages.length - 1].role === "user" && (
+                <ThinkingMessage />
+              )}
+
             {error && (
               <div className="flex items-center justify-center space-x-2 text-red-400 mb-4">
                 <div className="flex flex-col items-center justify-center space-y-2">
@@ -314,13 +294,6 @@ export default function Chat({
         </div>
         <div ref={messagesEndRef} />
       </ScrollArea>
-
-      {isLoading && (
-        <div className="flex items-center justify-center space-x-2 text-white mb-4">
-          <Loader2 className="animate-spin" />
-          <span>AI is thinking...</span>
-        </div>
-      )}
 
       <MessageInput
         input={input}

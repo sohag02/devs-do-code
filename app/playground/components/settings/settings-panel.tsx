@@ -10,7 +10,6 @@ import {
   Sparkles,
   MessageSquare,
   Plus,
-  PlayCircle,
   Briefcase,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,11 +20,6 @@ import { ScrollArea } from "../../../../components/ui/scroll-area";
 import { ModelsSection } from "./ModelsSection";
 import { Model, Voice } from "../../actions";
 import { VoiceSection } from "./VoiceSection";
-
-interface Section {
-  id: string;
-  isExpanded: boolean;
-}
 
 interface SettingsPanelProps {
   models: Model[];
