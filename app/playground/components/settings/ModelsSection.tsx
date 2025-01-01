@@ -1,12 +1,18 @@
 import { Tabs, Tab } from "@nextui-org/react";
 import useModelStore from "@/context/useModelStore";
 import { Model } from "../../actions";
+import {
+  SiOpenai,
+  SiAnthropic,
+  SiGoogle,
+  SiMeta,
+} from "@icons-pack/react-simple-icons";
 
 const categories = [
-  "GPT Models",
-  "Google Gemma Models",
-  "Claude Models",
-  "Meta LLaMA Models",
+  { name: "OpenAI", icon: <SiOpenai size={16} /> },
+  { name: "Anthropic", icon: <SiAnthropic size={16} /> },
+  { name: "Google", icon: <SiGoogle size={16} /> },
+  { name: "Meta", icon: <SiMeta size={16} /> },
 ];
 
 interface ModelsSectionProps {
@@ -32,11 +38,12 @@ export function ModelsSection({ models }: ModelsSectionProps) {
       >
         {categories.map((category) => (
           <Tab
-            key={category}
-            value={category}
+            key={category.name}
+            value={category.name}
             title={
               <div className="flex text-xs items-center justify-start space-x-1">
-                <span>{category.replace("Models", "")}</span>
+                {category.icon}
+                <span>{category.name}</span>
               </div>
             }
           >
@@ -55,7 +62,9 @@ export function ModelsSection({ models }: ModelsSectionProps) {
               }}
             >
               {models
-                .filter((model) => model.category === category)
+                .filter(
+                  (model) => model.category === category.name.toLowerCase()
+                )
                 .map((model) => (
                   <Tab
                     key={model.model_id}
@@ -95,7 +104,12 @@ export function ModelsSection({ models }: ModelsSectionProps) {
             }}
           >
             {models
-              .filter((model) => !categories.includes(model.category))
+              .filter(
+                (model) =>
+                  !categories
+                    .flatMap((c) => c.name.toLocaleLowerCase())
+                    .includes(model.category)
+              )
               .map((model) => (
                 <Tab
                   key={model.model_id}
