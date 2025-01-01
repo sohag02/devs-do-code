@@ -1,214 +1,275 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Code2, Star, Shield, Check, Zap } from 'lucide-react'
-import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { Check } from 'lucide-react'
+import { useState } from 'react'
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
+const monthlyPricing = {
+  starter: {
+    price: '924',
+    originalPrice: '2310',
+    usd: '11',
+    yearlyBilling: '₹11088 INR ($132 USD)'
+  },
+  pro: {
+    price: '2016',
+    originalPrice: '5040',
+    usd: '24',
+    yearlyBilling: '₹24192 INR ($288 USD)'
+  },
+  expert: {
+    price: '3024',
+    originalPrice: '7560',
+    usd: '36',
+    yearlyBilling: '₹36288 INR ($432 USD)'
   }
 }
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5
-    }
+const yearlyPricing = {
+  starter: {
+    price: '756',
+    originalPrice: '1848',
+    usd: '9',
+    yearlyBilling: '₹8484 INR ($101 USD)'
+  },
+  pro: {
+    price: '1512',
+    originalPrice: '3780',
+    usd: '18',
+    yearlyBilling: '₹17808 INR ($212 USD)'
+  },
+  expert: {
+    price: '2100',
+    originalPrice: '5208',
+    usd: '25',
+    yearlyBilling: '₹24696 INR ($294 USD)'
   }
 }
-
-const plans = [
-  {
-    name: 'Hobby',
-    icon: Code2,
-    description: 'Perfect for side projects and learning',
-    price: 'Free',
-    period: '',
-    features: [
-      '1,000 API calls/month',
-      'Basic code generation',
-      'Community support',
-      'Basic IDE integration',
-      'Public repositories only'
-    ],
-    gradient: 'from-blue-500/20 to-purple-500/20',
-    buttonText: 'Get Started',
-    buttonVariant: 'outline' as const
-  },
-  {
-    name: 'Pro',
-    icon: Star,
-    description: 'For professional developers and small teams',
-    price: '$29',
-    period: '/month',
-    features: [
-      '50,000 API calls/month',
-      'Advanced code generation',
-      'Priority support',
-      'Full IDE integration',
-      'Private repositories',
-      'Team collaboration',
-      'Custom models'
-    ],
-    gradient: 'from-purple-500/20 to-pink-500/20',
-    popular: true,
-    buttonText: 'Start Free Trial',
-    buttonVariant: 'default' as const
-  },
-  {
-    name: 'Enterprise',
-    icon: Shield,
-    description: 'For large teams and organizations',
-    price: 'Custom',
-    period: '',
-    features: [
-      'Unlimited API calls',
-      'Custom model training',
-      '24/7 dedicated support',
-      'SSO & advanced security',
-      'Custom integrations',
-      'SLA guarantee',
-      'On-premise deployment'
-    ],
-    gradient: 'from-pink-500/20 to-orange-500/20',
-    buttonText: 'Contact Sales',
-    buttonVariant: 'outline' as const
-  }
-]
 
 export default function PricingPage() {
-  const [isAnnual, setIsAnnual] = useState(false)
+  const [isAnnual, setIsAnnual] = useState(true)
+  const pricing = isAnnual ? yearlyPricing : monthlyPricing
 
   return (
     <motion.div
-      variants={containerVariants}
+      variants={{
+        hidden: { opacity: 0 },
+        visible: { opacity: 1 }
+      }}
       initial="hidden"
       animate="visible"
-      className="min-h-screen bg-[#1A1A1A] text-white py-24 px-4"
+      className="min-h-screen bg-black text-white py-24 px-4"
     >
       {/* Header */}
-      <motion.div variants={itemVariants} className="text-center max-w-3xl mx-auto mb-16">
+      <motion.div className="text-center max-w-3xl mx-auto mb-16">
         <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 text-transparent bg-clip-text">
-          Simple, Transparent Pricing
+          Unlock the Full Power of AI
         </h1>
         <p className="text-xl text-gray-400 mb-8">
-          Choose the perfect plan for your needs. All plans include core features.
+          Access ChatGPT, Claude, Perplexity, Stable Diffusion, and more—all-in-one
         </p>
-        
+
         {/* Billing Toggle */}
-        <div 
-          className="flex items-center justify-center gap-6 bg-[#1E1E1E] p-2 rounded-full w-fit mx-auto cursor-pointer"
-          onClick={() => setIsAnnual(!isAnnual)}
-        >
-          <span className={`text-sm px-3 py-1.5 rounded-full transition-colors duration-200 ${!isAnnual ? 'text-white bg-[#2A2A2A]' : 'text-gray-400'}`}>
+        <div className="flex items-center justify-center gap-4 bg-white/5 backdrop-blur-sm p-1.5 rounded-full w-fit mx-auto">
+          <button
+            className={`px-6 py-2 rounded-full text-sm transition-all ${!isAnnual ? 'bg-blue-500 text-white' : 'text-gray-400'}`}
+            onClick={() => setIsAnnual(false)}
+          >
             Monthly
-          </span>
-          <div className="flex items-center gap-2">
-            <span className={`text-sm px-3 py-1.5 rounded-full transition-colors duration-200 ${isAnnual ? 'text-white bg-[#2A2A2A]' : 'text-gray-400'}`}>
-              Annual
-            </span>
-            <span className="text-xs px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded-full whitespace-nowrap">
-              Save 20%
-            </span>
-          </div>
+          </button>
+          <button
+            className={`px-6 py-2 rounded-full text-sm transition-all ${isAnnual ? 'bg-blue-500 text-white' : 'text-gray-400'}`}
+            onClick={() => setIsAnnual(true)}
+          >
+            Yearly
+          </button>
         </div>
       </motion.div>
 
       {/* Pricing Cards */}
-      <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8 px-4">
-        {plans.map((plan, index) => (
-          <motion.div
-            key={plan.name}
-            variants={itemVariants}
-            className={`relative rounded-2xl bg-[#2A2A2A] border border-[#3A3A3A] p-8 ${
-              plan.popular ? 'md:scale-105' : ''
-            }`}
-          >
-            {/* Popular Badge */}
-            {plan.popular && (
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <div className="bg-blue-500 text-white text-sm font-medium px-4 py-1 rounded-full">
-                  Most Popular
-                </div>
-              </div>
-            )}
+      <motion.div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+        {/* Starter */}
+        <div className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+          <h3 className="text-2xl font-bold mb-2">Starter</h3>
+          <p className="text-gray-400 mb-6">Essential AI tools for everyday use</p>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">₹{pricing.starter.price}</span>
+            <span className="text-gray-400">/mo</span>
+            <span className="ml-2 text-gray-500 line-through">₹{pricing.starter.originalPrice}</span>
+          </div>
+          <div className="text-sm text-gray-400 mb-6">
+            Billed yearly at {pricing.starter.yearlyBilling}
+          </div>
+          <Button className="w-full mb-6" variant="outline">
+            Upgrade to Starter
+          </Button>
+          <ul className="space-y-4">
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>1,000 Premium AI Messages</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>30 HD Image Generations</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>5 AI Video Creations</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>All Premium AI Models</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>AI Mindmap Generator</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>Writing Library Access</span>
+            </li>
+          </ul>
+        </div>
 
-            {/* Gradient Background */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${plan.gradient} opacity-5 rounded-2xl`} />
+        {/* Pro */}
+        <div className="relative p-8 rounded-2xl bg-gradient-to-b from-blue-500/10 to-purple-500/10 border border-blue-500/20">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-blue-500 rounded-full text-sm">
+            Most Popular
+          </div>
+          <h3 className="text-2xl font-bold mb-2">Pro</h3>
+          <p className="text-gray-400 mb-6">Perfect for power users and creators</p>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">₹{pricing.pro.price}</span>
+            <span className="text-gray-400">/mo</span>
+            <span className="ml-2 text-gray-500 line-through">₹{pricing.pro.originalPrice}</span>
+          </div>
+          <div className="text-sm text-gray-400 mb-6">
+            Billed yearly at {pricing.pro.yearlyBilling}
+          </div>
+          <Button className="w-full mb-6" variant="default">
+            Upgrade to Pro
+          </Button>
+          <ul className="space-y-4">
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>4,000 Premium AI Messages</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>100 HD Image Generations</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>15 AI Video Creations</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>All Premium AI Models</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>AI Mindmap Generator</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>Writing Library Access</span>
+            </li>
+          </ul>
+        </div>
 
-            {/* Content */}
-            <div className="relative">
-              {/* Header */}
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-white/10 rounded-xl">
-                  <plan.icon className="h-6 w-6 text-blue-400" />
-                </div>
-                <h3 className="text-xl font-semibold">{plan.name}</h3>
-              </div>
-              <p className="text-gray-400 mb-6">{plan.description}</p>
+        {/* Expert */}
+        <div className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+          <h3 className="text-2xl font-bold mb-2">Expert</h3>
+          <p className="text-gray-400 mb-6">Maximum AI power for professionals</p>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">₹{pricing.expert.price}</span>
+            <span className="text-gray-400">/mo</span>
+            <span className="ml-2 text-gray-500 line-through">₹{pricing.expert.originalPrice}</span>
+          </div>
+          <div className="text-sm text-gray-400 mb-6">
+            Billed yearly at {pricing.expert.yearlyBilling}
+          </div>
+          <Button className="w-full mb-6" variant="outline">
+            Upgrade to Expert
+          </Button>
+          <ul className="space-y-4">
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>8,000 Premium AI Messages</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>300 HD Image Generations</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>30 AI Video Creations</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>All Premium AI Models</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>AI Mindmap Generator</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>Writing Library Access</span>
+            </li>
+          </ul>
+        </div>
+      </motion.div>
 
-              {/* Price */}
-              <div className="mb-8">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  {plan.period && (
-                    <span className="text-gray-400">{plan.period}</span>
-                  )}
-                </div>
-                {isAnnual && plan.price !== 'Free' && plan.price !== 'Custom' && (
-                  <p className="text-sm text-gray-400 mt-1">
-                    Billed annually (save 20%)
-                  </p>
-                )}
-              </div>
-
-              {/* Features */}
-              <ul className="space-y-4 mb-8">
-                {plan.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-center gap-3">
-                    <div className="rounded-full p-1 bg-blue-500/20">
-                      <Check className="h-4 w-4 text-blue-400" />
-                    </div>
-                    <span className="text-gray-300">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* Button */}
-              <Button
-                variant={plan.buttonVariant}
-                size="lg"
-                className="w-full"
-              >
-                {plan.buttonText}
-                {plan.name === 'Pro' && (
-                  <Zap className="ml-2 h-4 w-4" />
-                )}
-              </Button>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* FAQ Section */}
-      <motion.div variants={itemVariants} className="max-w-3xl mx-auto mt-24 text-center">
-        <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
-        <p className="text-gray-400">
-          Have more questions?{' '}
-          <Link href="/contact" className="text-blue-400 hover:text-blue-300">
-            Contact our team
-          </Link>
-        </p>
+      {/* Footer */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="max-w-6xl mx-auto text-center border-t border-gray-800 pt-16"
+      >
+        <div className="grid md:grid-cols-4 gap-8 mb-12">
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Product</h3>
+            <ul className="space-y-2 text-gray-400">
+              <li>Features</li>
+              <li>Integrations</li>
+              <li>Pricing</li>
+              <li>Changelog</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Resources</h3>
+            <ul className="space-y-2 text-gray-400">
+              <li>Documentation</li>
+              <li>API Reference</li>
+              <li>Status</li>
+              <li>Support</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Company</h3>
+            <ul className="space-y-2 text-gray-400">
+              <li>About</li>
+              <li>Blog</li>
+              <li>Careers</li>
+              <li>Contact</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Legal</h3>
+            <ul className="space-y-2 text-gray-400">
+              <li>Privacy</li>
+              <li>Terms</li>
+              <li>Security</li>
+              <li>Cookies</li>
+            </ul>
+          </div>
+        </div>
+        <div className="text-gray-400 border-t border-gray-800 pt-8 pb-4">
+          2025 DevsDo.Code. All rights reserved.
+        </div>
       </motion.div>
     </motion.div>
   )

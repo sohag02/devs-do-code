@@ -3,36 +3,25 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ChevronRight, Search } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Book, MessageSquare, Zap, Image as ImageIcon, Volume2, Mic, Box } from 'lucide-react'
 
-const sidebarSections = [
+const sidebarItems = [
   {
-    title: 'GET STARTED',
+    label: 'GETTING STARTED',
     items: [
-      { title: 'Introduction', href: '/docs' },
-      { title: 'Quickstart', href: '/docs/quickstart' },
-      { title: 'Authentication', href: '/docs/authentication' },
-      { title: 'Models', href: '/docs/models' },
+      { label: 'Introduction', href: '/docs', icon: Book },
+      { label: 'Quickstart', href: '/docs/quickstart', icon: Zap },
+      { label: 'Models', href: '/docs/models', icon: Box },
     ]
   },
   {
-    title: 'GUIDES',
+    label: 'GUIDES',
     items: [
-      { title: 'Text Generation', href: '/docs/text-generation' },
-      { title: 'Code Generation', href: '/docs/code-generation' },
-      { title: 'Best Practices', href: '/docs/best-practices' },
-      { title: 'Rate Limits', href: '/docs/rate-limits' },
-      { title: 'Error Handling', href: '/docs/error-handling' },
-    ]
-  },
-  {
-    title: 'API REFERENCE',
-    items: [
-      { title: 'Authentication', href: '/docs/api/authentication' },
-      { title: 'Models', href: '/docs/api/models' },
-      { title: 'Chat', href: '/docs/api/chat' },
-      { title: 'Code', href: '/docs/api/code' },
-      { title: 'Embeddings', href: '/docs/api/embeddings' },
+      { label: 'Text Generation', href: '/docs/text-generation', icon: MessageSquare },
+      { label: 'Image Generation', href: '/docs/image-generation', icon: ImageIcon },
+      { label: 'Text to Speech', href: '/docs/text-to-speech', icon: Volume2 },
+      { label: 'Speech to Text', href: '/docs/speech-to-text', icon: Mic },
     ]
   }
 ]
@@ -45,56 +34,66 @@ export default function DocsLayout({
   const pathname = usePathname()
 
   return (
-    <div className="min-h-screen bg-[#1A1A1A]">
-      {/* Fixed Sidebar */}
-      <div className="fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] border-r border-[#2A2A2A] bg-[#1A1A1A] overflow-y-auto">
-        {/* Search */}
-        <div className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="search"
-              placeholder="Search docs..."
-              className="w-full pl-10 pr-4 py-2 bg-[#2A2A2A] border-0 rounded-lg text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+    <div className="flex min-h-screen bg-black">
+      {/* Sidebar */}
+      <motion.div 
+        initial={{ x: -20, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="w-64 bg-gray-900/50 backdrop-blur-sm border-r border-gray-800"
+      >
+        <div className="p-6 border-b border-gray-800">
+          <Link href="/docs" className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            Documentation
+          </Link>
         </div>
-
-        {/* Navigation */}
-        <nav className="px-4 pb-4">
-          {sidebarSections.map((section, index) => (
-            <div key={index} className="mb-8">
-              <h3 className="text-xs font-semibold text-gray-400 mb-4 px-4">
-                {section.title}
-              </h3>
+        <nav className="p-4">
+          {sidebarItems.map((section, index) => (
+            <motion.div 
+              key={index}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="mb-6"
+            >
+              <h2 className="mb-2 px-4 text-xs font-semibold tracking-wider text-gray-400">
+                {section.label}
+              </h2>
               <ul className="space-y-1">
-                {section.items.map((item, itemIndex) => (
-                  <li key={itemIndex}>
-                    <Link
-                      href={item.href}
-                      className={`flex items-center justify-between px-4 py-2 rounded-lg text-sm hover:bg-[#2A2A2A] transition-colors ${
-                        pathname === item.href
-                          ? 'text-blue-400 bg-blue-500/10'
-                          : 'text-gray-300 hover:text-white'
-                      }`}
+                {section.items.map((item, itemIndex) => {
+                  const isActive = pathname === item.href
+                  return (
+                    <motion.li 
+                      key={itemIndex}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: (index * section.items.length + itemIndex) * 0.05 }}
                     >
-                      {item.title}
-                      {pathname === item.href && (
-                        <ChevronRight className="w-4 h-4" />
-                      )}
-                    </Link>
-                  </li>
-                ))}
+                      <Link
+                        href={item.href}
+                        className={cn(
+                          'flex items-center gap-3 rounded-lg px-4 py-2 text-sm font-medium transition-all hover:text-white',
+                          isActive
+                            ? 'bg-gray-800/80 text-white'
+                            : 'text-gray-400 hover:bg-gray-800/50'
+                        )}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {item.label}
+                      </Link>
+                    </motion.li>
+                  )
+                })}
               </ul>
-            </div>
+            </motion.div>
           ))}
         </nav>
-      </div>
+      </motion.div>
 
-      {/* Main Content */}
-      <main className="ml-64 min-h-screen">
+      {/* Main content */}
+      <div className="flex-1">
         {children}
-      </main>
+      </div>
     </div>
   )
 }
