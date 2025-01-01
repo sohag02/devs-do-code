@@ -14,7 +14,8 @@ interface ModelsSectionProps {
 }
 
 export function ModelsSection({ models }: ModelsSectionProps) {
-  const { modelId, setModelId, provider, setProvider } = useModelStore();
+  const { modelId, setModelId, provider, setProvider, setModelName } =
+    useModelStore();
 
   return (
     <div className="flex flex-col w-full mt-2">
@@ -44,6 +45,9 @@ export function ModelsSection({ models }: ModelsSectionProps) {
               color="primary"
               onSelectionChange={(value) => {
                 setModelId(value as string);
+                setModelName(
+                  models.find((model) => model.model_id === value)?.name || ""
+                );
               }}
               defaultSelectedKey={modelId}
               classNames={{
@@ -80,6 +84,10 @@ export function ModelsSection({ models }: ModelsSectionProps) {
             color="primary"
             onSelectionChange={(value) => {
               setModelId(value as string);
+              setModelName(
+                models.find((model) => model.model_id === value)?.name || ""
+              );
+              setProvider("Others");
             }}
             defaultSelectedKey={modelId}
             classNames={{

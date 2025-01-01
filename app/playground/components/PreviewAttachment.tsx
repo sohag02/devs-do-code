@@ -12,11 +12,10 @@ export const PreviewAttachment = ({
   const { name, url, contentType } = attachment;
 
   return (
-    <div className="flex flex-row gap-2 bg-[#191B1C] rounded-md p-2 items-center justify-start">
+    <div className="flex flex-row gap-2 bg-[#191B1C] rounded-xl p-2 items-center justify-start">
       <div className="w-10 h-10  bg-muted rounded-md relative flex flex-col items-center justify-center">
         {contentType ? (
           contentType.startsWith('image') ? (
-            // NOTE: it is recommended to use next/image for images
             // eslint-disable-next-line @next/next/no-img-element
             <img
               key={url}
@@ -40,7 +39,7 @@ export const PreviewAttachment = ({
         )}
       </div>
       <div>
-        <div className="text-xs text-white font-semibold max-w-16 truncate">{name}</div>
+        <div className="text-xs text-white font-semibold w-24 truncate">{name}</div>
         <div className="text-xs text-gray-200 font-thin max-w-16 truncate">{contentType}</div>
       </div>
     </div>

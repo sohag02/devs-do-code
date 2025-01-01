@@ -9,7 +9,7 @@ import useVoiceStore from "@/context/useVoiceStore";
 import { Attachment } from "ai";
 import { useChat } from "ai/react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Copy, Loader2, RotateCcw, Volume2, StopCircle } from "lucide-react";
+import { Loader2, RotateCcw, Volume2, StopCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MessageInput } from "./ChatInput";
 import MarkdownRenderer from "./MarkdownRenderer";
@@ -17,6 +17,35 @@ import { PreviewAttachment } from "./PreviewAttachment";
 import { useSession } from "@/context/SessionContext";
 import { useSWRConfig } from "swr";
 import { type Message } from "@/db/queries";
+import CopyButton from "@/components/copy-button";
+import {
+  SiOpenai,
+  SiAnthropic,
+  SiGoogle,
+  SiMeta,
+} from "@icons-pack/react-simple-icons";
+
+function ProviderIcon({
+  provider,
+  size = 24,
+  color = "currentColor",
+}: {
+  provider: string;
+  size?: number;
+  color?: string;
+}) {
+  if (provider === "OpenAI") {
+    return <SiOpenai size={size} color={color} />;
+  } else if (provider === "Anthropic") {
+    return <SiAnthropic size={size} color={color} />;
+  } else if (provider === "Google") {
+    return <SiGoogle size={size} color={color} />;
+  } else if (provider === "Meta") {
+    return <SiMeta size={size} color={color} />;
+  } else {
+    return <SiOpenai size={size} color={color} />;
+  }
+}
 
 interface ChatInterfaceProps {
   firstMessage?: string;
@@ -29,11 +58,14 @@ export default function Chat({
   initialMessage,
   chatId,
 }: ChatInterfaceProps) {
-  const { modelId } = useModelStore();
+  const { modelId, provider, modelName } = useModelStore();
   const { temperature, topP, topK, customInstructions } = useSettingsStore();
   const { voiceId } = useVoiceStore();
   const [isGeneratingVoice, setIsGeneratingVoice] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentlyPlayingId, setCurrentlyPlayingId] = useState<string | null>(
+    null
+  );
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const { user } = useSession();
   const { mutate } = useSWRConfig();
@@ -88,7 +120,9 @@ export default function Chat({
     reload,
   } = useChat({
     onFinish: () => {
-      mutate(`/api/history?id=${user?.userid}`);
+      if (messages.length < 2) {
+        mutate(`/api/history?id=${user?.userid}`);
+      }
     },
     initialMessages: initialMessage?.map((msg) => ({
       ...msg,
@@ -129,6 +163,7 @@ export default function Chat({
     append,
     chatId,
     customInstructions,
+    firstMessage,
     initialMessage,
     messages.length,
     modelId,
@@ -174,111 +209,109 @@ export default function Chat({
   };
 
   return (
-    <div className="flex flex-col h-screen max-w-3xl mx-auto p-4 0">
+    <div className="flex flex-col h-screen max-w-3xl mx-auto p-4">
       <ScrollArea className="flex-grow mb-4 rounded-lg">
-        <AnimatePresence initial={false}>
-          {messages.map((m) => (
-            <motion.div
-              key={m.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className={`flex items-start space-x-2 mb-4 ${
-                m.role === "user" ? "justify-end" : "justify-start"
-              }`}
-            >
-              {m.role !== "user" && (
-                <Avatar>
-                  <AvatarImage src="/ai-avatar.png" alt="AI" />
-                  <AvatarFallback className="text-white rounded-full border-2 border-white">
-                    AI
-                  </AvatarFallback>
-                </Avatar>
-              )}
-              <div
-                className={`flex flex-col gap-2 ${
-                  m.role === "user" ? "items-end" : "items-start"
+        <div className="max-w-3xl mx-auto p-4">
+          <AnimatePresence initial={false}>
+            {messages.map((m) => (
+              <motion.div
+                key={m.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className={`flex items-start mb-4 ${
+                  m.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
-                {m.experimental_attachments && (
-                  <div className="flex flex-col gap-2">
-                    {m.experimental_attachments?.map((attachment, index) => (
-                      <PreviewAttachment key={index} attachment={attachment} />
-                    ))}
-                  </div>
-                )}
                 <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    m.role === "user"
-                      ? "bg-[#303030] text-white"
-                      : "bg-[#212121] text-gray-100"
+                  className={`flex flex-col max-w-[80%] gap-2 ${
+                    m.role === "user" ? "items-end" : "items-start"
                   }`}
                 >
-                  {m.role === "user" ? (
-                    m.content
-                  ) : (
-                    <>
-                      <MarkdownRenderer content={m.content} />
-                      {/* actions */}
-                      <div className="flex flex-row gap-2">
-                        <Button
-                          size="icon"
-                          variant={"ghost"}
-                          className="hover:bg-[#2A2A2A]"
-                          onClick={() =>
-                            navigator.clipboard.writeText(m.content)
-                          }
-                        >
-                          <Copy className="w-4 h-4 text-white" />
-                        </Button>
-                        {!isPlaying ? (
-                          <Button
-                            size="icon"
-                            variant={"ghost"}
-                            className="hover:bg-[#2A2A2A]"
-                            disabled={isGeneratingVoice}
-                            onClick={() => handlePlay(m.content)}
-                          >
-                            {isGeneratingVoice ? (
-                              <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                              <Volume2 className="w-4 h-4 text-white" />
-                            )}
-                          </Button>
-                        ) : (
-                          <Button
-                            size="icon"
-                            variant={"ghost"}
-                            className="hover:bg-[#2A2A2A]"
-                            onClick={stopAudio}
-                          >
-                            <StopCircle className="w-4 h-4 text-red-400" />
-                          </Button>
-                        )}
-                      </div>
-                    </>
+                  {m.experimental_attachments && (
+                    <div className="flex flex-col gap-2">
+                      {m.experimental_attachments?.map((attachment, index) => (
+                        <PreviewAttachment
+                          key={index}
+                          attachment={attachment}
+                        />
+                      ))}
+                    </div>
                   )}
+                  <div
+                    className={`w-full rounded-lg p-3 ${
+                      m.role === "user"
+                        ? "bg-[#303030] text-white mr-4"
+                        : "bg-[#212121] text-gray-100"
+                    }`}
+                  >
+                    {m.role === "user" ? (
+                      m.content
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <ProviderIcon provider={provider} color="#9ca3af" />
+                          <span className="text-sm font-semibold text-gray-400">
+                            {modelName}
+                          </span>
+                        </div>
+                        <MarkdownRenderer content={m.content} />
+                        {/* actions */}
+                        <div className="flex flex-row gap-2">
+                          <CopyButton textToCopy={m.content} />
+                          {isPlaying && currentlyPlayingId == m.id ? (
+                            <Button
+                              size="icon"
+                              variant={"ghost"}
+                              className="hover:bg-[#2A2A2A]"
+                              onClick={stopAudio}
+                            >
+                              <StopCircle className="w-4 h-4 text-red-400" />
+                            </Button>
+                          ) : (
+                            <Button
+                              size="icon"
+                              variant={"ghost"}
+                              className="hover:bg-[#2A2A2A]"
+                              disabled={isGeneratingVoice}
+                              onClick={() => {
+                                handlePlay(m.content);
+                                setCurrentlyPlayingId(m.id);
+                              }}
+                            >
+                              {isGeneratingVoice &&
+                              currentlyPlayingId == m.id ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                              ) : (
+                                <Volume2 className="w-4 h-4 text-white" />
+                              )}
+                            </Button>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+            {error && (
+              <div className="flex items-center justify-center space-x-2 text-red-400 mb-4">
+                <div className="flex flex-col items-center justify-center space-y-2">
+                  <div>An error occurred : {error.message}</div>
+                  <Button
+                    type="button"
+                    variant={"destructive"}
+                    className="bg-red-400 text-white"
+                    onClick={() => reload()}
+                  >
+                    <RotateCcw className="w-4 h-4 mr-2" /> Retry
+                  </Button>
                 </div>
               </div>
-            </motion.div>
-          ))}
-          {error && (
-            <div className="flex items-center justify-center space-x-2 text-red-400 mb-4">
-              <div className="flex flex-col items-center justify-center space-y-2">
-                <div>An error occurred : {error.message}</div>
-                <Button
-                  type="button"
-                  variant={"destructive"}
-                  className="bg-red-400 text-white"
-                  onClick={() => reload()}
-                >
-                  <RotateCcw className="w-4 h-4 mr-2" /> Retry
-                </Button>
-              </div>
-            </div>
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
+        </div>
         <div ref={messagesEndRef} />
       </ScrollArea>
 

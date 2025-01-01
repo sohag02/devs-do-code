@@ -67,7 +67,7 @@ export function Sidebar() {
       onMouseLeave={() => setIsExpanded(false)}
     >
       <motion.div
-        className="fixed top-0 left-0 h-full bg-[#1A1A1A] border-r border-[#2A2A2A] z-10 overflow-hidden shadow-xl"
+        className="top-0 left-0 h-full bg-[#1A1A1A] border-r border-[#2A2A2A] z-10 overflow-hidden shadow-xl"
         initial={{ width: 72 }}
         animate={{ width: isExpanded ? 280 : 72 }}
         transition={{ duration: 0.3, ease: [0.48, 0.15, 0.25, 0.96] }}

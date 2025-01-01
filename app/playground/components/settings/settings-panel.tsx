@@ -91,12 +91,12 @@ export function SettingsPanel({ models, voices }: SettingsPanelProps) {
 
   return (
     <div
-      className="fixed top-0 right-0 h-screen"
+      className="top-0 right-0 h-screen"
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
       <motion.div
-        className="h-full bg-[#1A1A1A] border-l border-[#2A2A2A] overflow-hidden"
+        className="h-full bg-[#121212] border-[#2A2A2A] overflow-hidden"
         initial={{ width: 48 }}
         animate={{ width: isExpanded ? 400 : 48 }}
         transition={{ duration: 0.2 }}
@@ -106,7 +106,7 @@ export function SettingsPanel({ models, voices }: SettingsPanelProps) {
           <div className="p-6 space-y-6">
             <div className=" items-center justify-between">
               <h2 className="text-xl font-semibold flex items-center gap-2">
-                <Settings className="w-5 h-5 text-white" />
+                <Settings className="w-6 h-6 text-white" />
                 <motion.span
                   initial={{ opacity: 0 }}
                   animate={{ opacity: isExpanded ? 1 : 0 }}
