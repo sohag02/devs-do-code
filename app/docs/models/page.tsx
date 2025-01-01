@@ -58,7 +58,10 @@ export default function ModelsPage() {
         <motion.div
           initial="hidden"
           animate="visible"
-          variants={fadeIn}
+          variants={{
+            hidden: { opacity: 0 },
+            visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+          }}
           className="space-y-12"
         >
           {/* Header */}
