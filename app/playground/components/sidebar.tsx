@@ -4,17 +4,25 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Brain,
-  Settings,
+  LogOut,
   Github,
   Twitter,
   Instagram,
   Send,
   MessageCircle,
-  Image,
+  Image as ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useSession } from "@/context/SessionContext";
 import { ChatHistory } from "./chat-history";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const menuItemVariants = {
   hidden: { opacity: 0, x: -20 },
@@ -42,8 +50,7 @@ const socialLinks = [
 
 export function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);
-  const { user } = useSession();
-
+  const { user, logout } = useSession();
 
   const menuItems = [
     {
@@ -53,7 +60,7 @@ export function Sidebar() {
       href: "/playground",
     },
     {
-      icon: Image,
+      icon: ImageIcon,
       label: "Image Playground",
       className: "text-purple-400",
       href: "/image-playground",
@@ -142,31 +149,55 @@ export function Sidebar() {
           <div className="mt-auto pt-4 border-t border-[#2A2A2A] space-y-4">
             {/* Settings */}
             {user && (
-              <Link
-                href="/settings"
-                className="flex items-center gap-4 px-2 py-2 rounded-lg hover:bg-white/5 transition-colors group"
+              <div
+                className="flex items-center justify-between px-2 py-2 rounded-lg hover:bg-white/5 transition-colors group"
               >
-                <motion.div
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Settings className="w-6 h-6 shrink-0 text-gray-400" />
-                </motion.div>
-                <motion.span
-                  className="text-gray-300 text-sm whitespace-nowrap group-hover:text-white transition-colors"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: isExpanded ? 1 : 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  Settings
-                </motion.span>
-              </Link>
+                <div className="flex items-center gap-4">
+                  <Image
+                    src={user.photo}
+                    alt="User Profile"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
+                  <motion.span
+                    className="text-gray-300 text-sm whitespace-nowrap group-hover:text-white transition-colors"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isExpanded ? 1 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <div className="flex flex-col items-start gap-1">
+                      <span className="font-bold">{user.name}</span>
+                      <span>
+                        {user.plan_id.charAt(0).toUpperCase() +
+                          user.plan_id.slice(1)}
+                      </span>
+                    </div>
+                  </motion.span>
+                </div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size={"icon"}
+                        className="bg-transparent"
+                        onClick={logout}
+                      >
+                        <LogOut className="w-5 h-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-black">
+                      <p>Log Out</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             )}
 
             {/* Social Links */}
             <div
               className={`grid ${
-                isExpanded ? "grid-cols-4" : "grid-cols-1"
+                isExpanded ? "grid-cols-4" : "grid-cols-1 hidden"
               } gap-2 px-2`}
             >
               {socialLinks.map((social, index) => (
