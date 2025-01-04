@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 
-interface ApiKey {
+export interface ApiKey {
   id: string
   key: string
 	user_id: string
