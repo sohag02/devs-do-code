@@ -132,7 +132,7 @@ export default function TextGenerationPage() {
       </div>
 
       {/* Content */}
-      <div className="relative max-w-4xl mx-auto py-12 px-4">
+      <div className="relative max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -202,7 +202,7 @@ export default function TextGenerationPage() {
 
           <motion.section variants={fadeIn("up", 0.5)} className="space-y-6">
             <h2 className="text-2xl font-semibold text-white">Choosing a Model</h2>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
                 <h3 className="text-lg font-semibold text-white mb-3">Large Model</h3>
                 <p className="text-gray-400">

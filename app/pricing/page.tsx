@@ -6,44 +6,80 @@ import { Check } from 'lucide-react'
 import { useState } from 'react'
 
 const monthlyPricing = {
-  starter: {
-    price: '924',
-    originalPrice: '2310',
-    usd: '11',
-    yearlyBilling: '₹11088 INR ($132 USD)'
+  free: {
+    price: '0',
+    features: {
+      tokens: '200k tokens/day',
+      inputTokens: '4k tokens',
+      outputTokens: '4k tokens',
+      images: '20/day',
+      tts: '20/day',
+      ttsChars: '500/request',
+      rpm: '2 RPM',
+      rps: '1 RPS',
+      api: 'Not Available'
+    }
   },
   pro: {
-    price: '2016',
-    originalPrice: '5040',
-    usd: '24',
-    yearlyBilling: '₹24192 INR ($288 USD)'
+    price: '500',
+    features: {
+      tokens: '1M tokens/day',
+      inputTokens: '32k tokens',
+      outputTokens: '8k tokens',
+      images: '50/day',
+      tts: '50/day',
+      ttsChars: '1k/request',
+      rpm: '3 RPM',
+      rps: '2 RPS',
+      api: 'Available'
+    }
   },
-  expert: {
-    price: '3024',
-    originalPrice: '7560',
-    usd: '36',
-    yearlyBilling: '₹36288 INR ($432 USD)'
+  advanced: {
+    price: '1200',
+    features: {
+      tokens: '3M tokens/day',
+      inputTokens: 'Full context window',
+      outputTokens: 'Full output capability',
+      images: '200/day',
+      tts: '500/day',
+      ttsChars: '2k/request',
+      rpm: '4 RPM',
+      rps: '3 RPS',
+      api: 'Available'
+    }
+  },
+  ultimate: {
+    price: '2000',
+    features: {
+      tokens: '5M tokens/day',
+      inputTokens: 'Full context window',
+      outputTokens: 'Full output capability',
+      images: '500/day',
+      tts: '1k/day',
+      ttsChars: '5k/request',
+      rpm: '4+ RPM',
+      rps: '3+ RPS',
+      api: 'Available'
+    }
   }
 }
 
 const yearlyPricing = {
-  starter: {
-    price: '756',
-    originalPrice: '1848',
-    usd: '9',
-    yearlyBilling: '₹8484 INR ($101 USD)'
+  free: {
+    price: '0',
+    features: monthlyPricing.free.features
   },
   pro: {
-    price: '1512',
-    originalPrice: '3780',
-    usd: '18',
-    yearlyBilling: '₹17808 INR ($212 USD)'
+    price: '390',
+    features: monthlyPricing.pro.features
   },
-  expert: {
-    price: '2100',
-    originalPrice: '5208',
-    usd: '25',
-    yearlyBilling: '₹24696 INR ($294 USD)'
+  advanced: {
+    price: '950',
+    features: monthlyPricing.advanced.features
+  },
+  ultimate: {
+    price: '1600',
+    features: monthlyPricing.ultimate.features
   }
 }
 
@@ -88,64 +124,65 @@ export default function PricingPage() {
       </motion.div>
 
       {/* Pricing Cards */}
-      <motion.div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
-        {/* Starter */}
+      <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto mb-16 px-4">
+        {/* Free */}
         <div className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-          <h3 className="text-2xl font-bold mb-2">Starter</h3>
+          <h3 className="text-2xl font-bold mb-2">Free</h3>
           <p className="text-gray-400 mb-6">Essential AI tools for everyday use</p>
           <div className="mb-6">
-            <span className="text-4xl font-bold">₹{pricing.starter.price}</span>
+            <span className="text-4xl font-bold">₹{pricing.free.price}</span>
             <span className="text-gray-400">/mo</span>
-            <span className="ml-2 text-gray-500 line-through">₹{pricing.starter.originalPrice}</span>
-          </div>
-          <div className="text-sm text-gray-400 mb-6">
-            Billed yearly at {pricing.starter.yearlyBilling}
           </div>
           <Button className="w-full mb-6" variant="outline">
-            Upgrade to Starter
+            Get Started
           </Button>
           <ul className="space-y-4">
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>1,000 Premium AI Messages</span>
+              <span>{pricing.free.features.tokens}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>30 HD Image Generations</span>
+              <span>{pricing.free.features.inputTokens}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>5 AI Video Creations</span>
+              <span>{pricing.free.features.outputTokens}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>All Premium AI Models</span>
+              <span>{pricing.free.features.images}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>AI Mindmap Generator</span>
+              <span>{pricing.free.features.tts}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>Writing Library Access</span>
+              <span>{pricing.free.features.ttsChars}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.free.features.rpm}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.free.features.rps}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.free.features.api}</span>
             </li>
           </ul>
         </div>
 
         {/* Pro */}
-        <div className="relative p-8 rounded-2xl bg-gradient-to-b from-blue-500/10 to-purple-500/10 border border-blue-500/20">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-blue-500 rounded-full text-sm">
-            Most Popular
-          </div>
+        <div className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
           <h3 className="text-2xl font-bold mb-2">Pro</h3>
           <p className="text-gray-400 mb-6">Perfect for power users and creators</p>
           <div className="mb-6">
             <span className="text-4xl font-bold">₹{pricing.pro.price}</span>
             <span className="text-gray-400">/mo</span>
-            <span className="ml-2 text-gray-500 line-through">₹{pricing.pro.originalPrice}</span>
-          </div>
-          <div className="text-sm text-gray-400 mb-6">
-            Billed yearly at {pricing.pro.yearlyBilling}
           </div>
           <Button className="w-full mb-6" variant="default">
             Upgrade to Pro
@@ -153,70 +190,141 @@ export default function PricingPage() {
           <ul className="space-y-4">
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>4,000 Premium AI Messages</span>
+              <span>{pricing.pro.features.tokens}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>100 HD Image Generations</span>
+              <span>{pricing.pro.features.inputTokens}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>15 AI Video Creations</span>
+              <span>{pricing.pro.features.outputTokens}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>All Premium AI Models</span>
+              <span>{pricing.pro.features.images}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>AI Mindmap Generator</span>
+              <span>{pricing.pro.features.tts}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>Writing Library Access</span>
+              <span>{pricing.pro.features.ttsChars}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.pro.features.rpm}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.pro.features.rps}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.pro.features.api}</span>
             </li>
           </ul>
         </div>
 
-        {/* Expert */}
+        {/* Advanced */}
         <div className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-          <h3 className="text-2xl font-bold mb-2">Expert</h3>
+          <h3 className="text-2xl font-bold mb-2">Advanced</h3>
           <p className="text-gray-400 mb-6">Maximum AI power for professionals</p>
           <div className="mb-6">
-            <span className="text-4xl font-bold">₹{pricing.expert.price}</span>
+            <span className="text-4xl font-bold">₹{pricing.advanced.price}</span>
             <span className="text-gray-400">/mo</span>
-            <span className="ml-2 text-gray-500 line-through">₹{pricing.expert.originalPrice}</span>
-          </div>
-          <div className="text-sm text-gray-400 mb-6">
-            Billed yearly at {pricing.expert.yearlyBilling}
           </div>
           <Button className="w-full mb-6" variant="outline">
-            Upgrade to Expert
+            Upgrade to Advanced
           </Button>
           <ul className="space-y-4">
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>8,000 Premium AI Messages</span>
+              <span>{pricing.advanced.features.tokens}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>300 HD Image Generations</span>
+              <span>{pricing.advanced.features.inputTokens}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>30 AI Video Creations</span>
+              <span>{pricing.advanced.features.outputTokens}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>All Premium AI Models</span>
+              <span>{pricing.advanced.features.images}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>AI Mindmap Generator</span>
+              <span>{pricing.advanced.features.tts}</span>
             </li>
             <li className="flex items-center gap-2">
               <Check className="h-5 w-5 text-green-500" />
-              <span>Writing Library Access</span>
+              <span>{pricing.advanced.features.ttsChars}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.advanced.features.rpm}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.advanced.features.rps}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.advanced.features.api}</span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Ultimate */}
+        <div className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
+          <h3 className="text-2xl font-bold mb-2">Ultimate</h3>
+          <p className="text-gray-400 mb-6">Maximum AI power for professionals</p>
+          <div className="mb-6">
+            <span className="text-4xl font-bold">₹{pricing.ultimate.price}</span>
+            <span className="text-gray-400">/mo</span>
+          </div>
+          <Button className="w-full mb-6" variant="outline">
+            Upgrade to Ultimate
+          </Button>
+          <ul className="space-y-4">
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.ultimate.features.tokens}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.ultimate.features.inputTokens}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.ultimate.features.outputTokens}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.ultimate.features.images}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.ultimate.features.tts}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.ultimate.features.ttsChars}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.ultimate.features.rpm}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.ultimate.features.rps}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <Check className="h-5 w-5 text-green-500" />
+              <span>{pricing.ultimate.features.api}</span>
             </li>
           </ul>
         </div>

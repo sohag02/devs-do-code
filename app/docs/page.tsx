@@ -57,7 +57,7 @@ export default function DocsPage() {
           <motion.div variants={fadeIn("up", 0.4)} className="space-y-12">
             <div>
               <h2 className="text-3xl font-bold text-purple-500 mb-8">Popular Guides</h2>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
                 {/* Text Generation */}
                 <Link href="/docs/text-generation" className="p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition group">
                   <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition">
