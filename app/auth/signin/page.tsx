@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { Brain } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
@@ -28,7 +28,7 @@ const itemVariants = {
   }
 }
 
-export default function SignIn() {
+function SignIn() {
   const [isLoading, setIsLoading] = useState(false)
   const searchParams = useSearchParams()
 
@@ -120,5 +120,13 @@ export default function SignIn() {
         </motion.p>
       </motion.div>
     </div>
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignIn />
+    </Suspense>
   )
 }
