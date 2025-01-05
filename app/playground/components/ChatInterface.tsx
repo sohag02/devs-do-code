@@ -102,6 +102,7 @@ export default function Chat({
       id: String(msg.id),
       createdAt: new Date(msg.createdAt),
     })),
+    credentials: "include",
   });
 
   const [isMounted, setIsMounted] = useState(false);

@@ -1,5 +1,5 @@
 import { createChat } from "@/app/playground/actions";
-import { createOpenAI } from "@ai-sdk/openai";
+import { createOpenAI, OpenAIProvider } from "@ai-sdk/openai";
 import {
   generateText,
   streamText,
@@ -8,27 +8,49 @@ import {
 } from "ai";
 import { saveMessage, getChatById } from "@/db/queries";
 import { type TextPart } from "ai";
+import { cookies } from "next/headers";
 
 function getMostRecentUserMessage(messages: Array<CoreMessage>) {
   const userMessages = messages.filter((message) => message.role === "user");
   return userMessages.at(-1);
 }
 
-const openai = createOpenAI({
-  apiKey: process.env.API_KEY,
-  baseURL: process.env.BASE_URL,
-});
+let openaiInstance: OpenAIProvider | null = null;
+
+const getOpenAIClient = () => {
+  if (!openaiInstance) {
+    openaiInstance = createOpenAI({
+      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1`,
+      compatibility: "compatible",
+      fetch: async (url: RequestInfo | URL, init?: RequestInit) => {
+        const cookieStore = cookies();
+        const headers = { ...init?.headers } as Record<string, string>;
+        delete headers["Authorization"];
+
+        return fetch(url, {
+          ...init,
+          headers: {
+            ...headers,
+            Cookie: cookieStore.toString(),
+          },
+        });
+      },
+    });
+  }
+  return openaiInstance;
+};
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
+  const openai = getOpenAIClient();
+
   const {
     messages,
     model,
     temperature,
     topP,
-    topK,
     customInstructions,
     chatId,
     userId,
@@ -38,7 +60,7 @@ export async function POST(req: Request) {
   const userMessage = getMostRecentUserMessage(coreMessages);
 
   if (!userMessage) {
-    return new Response('No user message found', { status: 400 });
+    return new Response("No user message found", { status: 400 });
   }
 
   const chat = await getChatById({ id: chatId });
@@ -62,13 +84,11 @@ export async function POST(req: Request) {
     chatId: chatId,
   });
 
-
   const result = streamText({
     model: openai(model),
     messages,
     temperature: temperature,
     topP: topP,
-    topK: topK,
     system: customInstructions,
     onFinish: async (text) => {
       const content = text.response.messages[0].content[0] as TextPart;
