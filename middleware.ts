@@ -12,7 +12,10 @@ export function middleware(req: NextRequest) {
 
     // If no access token, redirect to login page
     if (!accessToken) {
-      url.pathname = "/auth/signin"; // Redirect to login page
+      const searchParams = new URLSearchParams();
+      searchParams.set("next", url.pathname);
+      url.pathname = `/auth/signin`;
+      url.search = searchParams.toString();
       return NextResponse.redirect(url);
     }
   }

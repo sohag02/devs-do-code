@@ -1,31 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Settings,
-  ChevronRight,
-  Brain,
-  User2,
-  Sparkles,
-  MessageSquare,
-  Plus,
-  PlayCircle,
-  Briefcase,
-} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { BehaviorSection } from "./BehaviourSection";
-import { AdvancedSection } from "./AdvancedSection";
+import { Button as NextButton, Tab, Tabs, Textarea } from "@nextui-org/react";
+import { motion } from "framer-motion";
+import {
+  Brain,
+  Briefcase,
+  ChevronRight,
+  MessageSquare,
+  Plus,
+  Settings,
+  Sparkles,
+  User2,
+} from "lucide-react";
+import { useState } from "react";
 import { ScrollArea } from "../../../../components/ui/scroll-area";
-import { ModelsSection } from "./ModelsSection";
 import { Model, Voice } from "../../actions";
+import { AdvancedSection } from "./AdvancedSection";
+import { BehaviorSection } from "./BehaviourSection";
+import { ModelsSection } from "./ModelsSection";
 import { VoiceSection } from "./VoiceSection";
-
-interface Section {
-  id: string;
-  isExpanded: boolean;
-}
+import SmartPrompt from "./SmartPrompt";
 
 interface SettingsPanelProps {
   models: Model[];
@@ -34,7 +30,6 @@ interface SettingsPanelProps {
 
 export function SettingsPanel({ models, voices }: SettingsPanelProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [activeTab, setActiveTab] = useState<"model" | "smartprompt">("model");
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const sections = [
@@ -91,12 +86,12 @@ export function SettingsPanel({ models, voices }: SettingsPanelProps) {
 
   return (
     <div
-      className="fixed top-0 right-0 h-screen"
+      className="top-0 right-0 h-screen"
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
       <motion.div
-        className="h-full bg-[#1A1A1A] border-l border-[#2A2A2A] overflow-hidden"
+        className="h-full bg-[#121212] border-[#2A2A2A] overflow-hidden"
         initial={{ width: 48 }}
         animate={{ width: isExpanded ? 400 : 48 }}
         transition={{ duration: 0.2 }}
@@ -106,7 +101,7 @@ export function SettingsPanel({ models, voices }: SettingsPanelProps) {
           <div className="p-6 space-y-6">
             <div className=" items-center justify-between">
               <h2 className="text-xl font-semibold flex items-center gap-2">
-                <Settings className="w-5 h-5 text-white" />
+                <Settings className="w-6 h-6 text-white" />
                 <motion.span
                   initial={{ opacity: 0 }}
                   animate={{ opacity: isExpanded ? 1 : 0 }}
@@ -116,79 +111,96 @@ export function SettingsPanel({ models, voices }: SettingsPanelProps) {
                   Chat Settings
                 </motion.span>
               </h2>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: isExpanded ? 1 : 0 }}
-                transition={{ duration: 0.2 }}
-                className="flex items-center gap-1 bg-[#2A2A2A] rounded-full p-1"
-              >
-                <Button
-                  variant="ghost"
-                  className={`rounded-full px-4 ${
-                    activeTab === "model" ? "bg-[#3A3A3A]" : ""
-                  }`}
-                  onClick={() => setActiveTab("model")}
-                >
-                  <Brain className="w-4 h-4 mr-2" />
-                  Model
-                </Button>
-                <Button
-                  variant="ghost"
-                  className={`rounded-full px-4 ${
-                    activeTab === "smartprompt" ? "bg-[#3A3A3A]" : ""
-                  }`}
-                  onClick={() => setActiveTab("smartprompt")}
-                >
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  SmartPrompt
-                </Button>
-              </motion.div>
             </div>
 
-            {/* Sections */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: isExpanded ? 1 : 0 }}
               transition={{ duration: 0.2 }}
-              className="flex flex-col h-screen space-y-4"
+              className="w-full mx-auto"
             >
-              <ScrollArea className="flex-grow overflow-auto">
-                {sections.map((section) => (
-                  <div key={section.id} className="space-y-2">
-                    <button
-                      onClick={() =>
-                        setExpandedSection(
-                          expandedSection === section.id ? null : section.id
-                        )
-                      }
-                      className="w-full flex items-center justify-between hover:bg-[#2A2A2A] p-3 rounded-lg transition-colors"
-                    >
-                      <div className="space-y-1 text-left">
-                        <div className="flex items-center gap-2">
-                          <section.icon className="w-5 h-5 text-white" />
-                          <h3 className="text-lg text-white font-medium">
-                            {section.title}
-                          </h3>
+              <Tabs
+                className="w-full mx-4"
+                radius="full"
+                size="lg"
+                color="default"
+                classNames={{
+                  tab: "data-[selected=true]:bg-[#3A3A3A]",
+                }}
+              >
+                <Tab
+                  key="settings"
+                  value="settings"
+                  className="data-selected:bg-red-400"
+                  title={
+                    <div className="flex items-center font-semibold gap-2">
+                      <Settings className="w-4 h-4 text-white" />
+                      <span>Chat Settings</span>
+                    </div>
+                  }
+                >
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: isExpanded ? 1 : 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex flex-col h-screen space-y-4"
+                  >
+                    <ScrollArea className="flex-grow overflow-auto">
+                      {sections.map((section) => (
+                        <div key={section.id} className="space-y-2">
+                          <button
+                            onClick={() =>
+                              setExpandedSection(
+                                expandedSection === section.id
+                                  ? null
+                                  : section.id
+                              )
+                            }
+                            className="w-full flex items-center justify-between hover:bg-[#2A2A2A] p-3 rounded-lg transition-colors"
+                          >
+                            <div className="space-y-1 text-left">
+                              <div className="flex items-center gap-2">
+                                <section.icon className="w-5 h-5 text-white" />
+                                <h3 className="text-lg text-white font-medium">
+                                  {section.title}
+                                </h3>
+                              </div>
+                              <p className="text-sm text-gray-400">
+                                {section.description}
+                              </p>
+                            </div>
+                            <ChevronRight
+                              className={cn(
+                                "w-5 h-5 text-gray-400 transition-transform",
+                                expandedSection === section.id && "rotate-90"
+                              )}
+                            />
+                          </button>
+                          {expandedSection === section.id && (
+                            <div className="border-t border-[#2A2A2A]">
+                              {section.content}
+                            </div>
+                          )}
                         </div>
-                        <p className="text-sm text-gray-400">
-                          {section.description}
-                        </p>
-                      </div>
-                      <ChevronRight
-                        className={cn(
-                          "w-5 h-5 text-gray-400 transition-transform",
-                          expandedSection === section.id && "rotate-90"
-                        )}
-                      />
-                    </button>
-                    {expandedSection === section.id && (
-                      <div className="border-t border-[#2A2A2A]">
-                        {section.content}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </ScrollArea>
+                      ))}
+                    </ScrollArea>
+                  </motion.div>
+                </Tab>
+
+                {/* Smart Prompt */}
+                <Tab
+                  key="smart-prompt"
+                  value="smart-prompt"
+                  title={
+                    <div className="flex items-center font-semibold gap-2">
+                      <Sparkles className="w-4 h-4" />
+                      <span>Smart Prompt</span>
+                    </div>
+                  }
+                >
+                  <SmartPrompt />
+                </Tab>
+              </Tabs>
             </motion.div>
           </div>
         </div>

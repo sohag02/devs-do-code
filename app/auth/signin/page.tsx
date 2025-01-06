@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { Brain } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -27,13 +28,16 @@ const itemVariants = {
   }
 }
 
-export default function SignIn() {
+function SignIn() {
   const [isLoading, setIsLoading] = useState(false)
+  const searchParams = useSearchParams()
+
+  const next_url = searchParams.get('next')
 
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true)
-      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/googlelogin`
+      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/googlelogin?next=${next_url}`
     } catch (error) {
       console.error('Google sign in error:', error)
     } finally {
@@ -44,7 +48,7 @@ export default function SignIn() {
   const handleGitHubSignIn = async () => {
     try {
       setIsLoading(true)
-      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/githublogin`
+      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/githublogin?next=${next_url}`
     } catch (error) {
       console.error('GitHub sign in error:', error)
     } finally {
@@ -116,5 +120,13 @@ export default function SignIn() {
         </motion.p>
       </motion.div>
     </div>
+  )
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignIn />
+    </Suspense>
   )
 }

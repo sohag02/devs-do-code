@@ -120,7 +120,7 @@ export function MessageInput({
     >
       {/* Attachments */}
       {(attachments.length > 0 || uploadQueue.length > 0) && (
-        <div className="flex flex-row gap-2 bg-[#2F2F2F] p-2 rounded-t-3xl">
+        <div className="flex flex-row gap-2 bg-[#2F2F2F] pt-4 px-4 rounded-t-3xl">
           {attachments.map((attachment, index) => (
             <PreviewAttachment key={index} attachment={attachment} />
           ))}
@@ -143,6 +143,7 @@ export function MessageInput({
       <Textarea
         ref={textareaRef}
         value={input}
+        autoFocus={true}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder="Type your message..."
@@ -181,12 +182,12 @@ export function MessageInput({
               type="submit"
               size="icon"
               disabled={input.length === 0 || isLoading}
-              className="bg-white rounded-full"
+              className="bg-white rounded-full p-0 m-0"
             >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <ArrowUp className="h-4 w-4" />
+                <ArrowUp className="h-6 w-6 text-black" />
               )}
             </Button>
           )}

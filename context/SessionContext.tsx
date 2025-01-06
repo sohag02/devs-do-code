@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useState, useEffect, useContext, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  ReactNode,
+} from "react";
 import { fetchUser } from "@/lib/fetchUser";
 
 interface User {
@@ -8,6 +14,7 @@ interface User {
   name: string;
   email: string;
   photo: string;
+  plan_id: string;
 }
 
 interface SessionContextType {
@@ -32,14 +39,25 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
     loadUser();
   }, []);
 
-  const logout = () => {
-    setUser(null);
-    document.cookie = "access_token=; Max-Age=0;"; // Clear access token cookie
-    document.cookie = "user_id=; Max-Age=0;"; // Clear user_id cookie
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/logout`, {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        window.location.href = "/";
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   return (
-    <SessionContext.Provider value={{ user, loading, logout }}>
+    <SessionContext.Provider value={{ user, loading, logout: handleLogout }}>
       {children}
     </SessionContext.Provider>
   );

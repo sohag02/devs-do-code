@@ -17,9 +17,9 @@ export default async function Playground({
   const messages = await getMessagesByChatId({ id });
 
   return (
-    <div className="flex">
+    <div className="flex text-white">
       <Sidebar />
-      <main className="flex-1 bg-[#121212] px-20">
+      <main className="flex-1 bg-[#121212]">
         {messages.length > 0 ? (
           <ChatInterface initialMessage={messages} chatId={id} />
         ) : (
