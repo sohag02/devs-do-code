@@ -20,6 +20,12 @@ export function middleware(req: NextRequest) {
     }
   }
 
+  // redirect /dashboard to /dashboard/api-keys
+  if (url.pathname === "/dashboard") {
+    url.pathname = "/dashboard/api-keys";
+    return NextResponse.redirect(url);
+  }
+
   // Allow request to proceed
   return NextResponse.next();
 }

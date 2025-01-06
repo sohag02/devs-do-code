@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
     <div className="min-h-screen bg-[#202123] text-white">
       <Navbar />
-      <div className="flex min-h-screen pt-20">
+      <div className="flex min-h-screen">
         <Sidebar />
         <main className="flex-1 px-8 py-6">
           <div className="mx-auto max-w-5xl">
