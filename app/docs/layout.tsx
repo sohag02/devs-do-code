@@ -4,7 +4,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import { Book, MessageSquare, Zap, Image as ImageIcon, Volume2, Mic, Box } from 'lucide-react'
+import { Book, MessageSquare, Zap, Image as ImageIcon, Volume2, Mic, Box, Menu, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
 const sidebarItems = [
   {
@@ -32,68 +33,104 @@ export default function DocsLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+      setIsOpen(window.innerWidth >= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   return (
     <div className="flex min-h-screen bg-black">
+      {/* Mobile menu button */}
+      {isMobile && (
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="fixed top-4 right-4 z-50 p-2 text-white bg-blue-500/10 rounded-lg md:hidden"
+        >
+          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      )}
+
       {/* Sidebar */}
       <motion.div 
-        initial={{ x: -20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        className="w-64 bg-gray-900/50 backdrop-blur-sm border-r border-gray-800"
+        initial={false}
+        animate={{ 
+          x: isOpen ? 0 : -256,
+        }}
+        transition={{ duration: 0.2 }}
+        className={cn(
+          "fixed top-0 left-0 bottom-0 w-64 bg-[#0A0A0A] border-r border-gray-800",
+          "z-40 overflow-y-auto",
+          "transform transition-transform duration-200 ease-in-out"
+        )}
       >
-        <div className="p-6 border-b border-gray-800">
-          <Link href="/docs" className="text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+        <div className="border-b border-gray-800">
+          <Link href="/docs" className="block px-6 py-4 text-xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
             Documentation
           </Link>
         </div>
-        <nav className="p-4">
+        <nav className="py-2">
           {sidebarItems.map((section, index) => (
             <motion.div 
               key={index}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="mb-6"
+              className="mb-4"
             >
-              <h2 className="mb-2 px-4 text-xs font-semibold tracking-wider text-gray-400">
+              <div className="px-4 py-2 text-sm font-medium text-gray-400">
                 {section.label}
-              </h2>
-              <ul className="space-y-1">
+              </div>
+              <div className="space-y-1">
                 {section.items.map((item, itemIndex) => {
                   const isActive = pathname === item.href
                   return (
-                    <motion.li 
+                    <Link
                       key={itemIndex}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: (index * section.items.length + itemIndex) * 0.05 }}
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-3 px-4 py-2 text-sm transition-colors",
+                        isActive 
+                          ? "bg-blue-500/10 text-blue-400" 
+                          : "text-gray-300 hover:bg-blue-500/5 hover:text-blue-400"
+                      )}
                     >
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          'flex items-center gap-3 rounded-lg px-4 py-2 text-sm font-medium transition-all hover:text-white',
-                          isActive
-                            ? 'bg-gray-800/80 text-white'
-                            : 'text-gray-400 hover:bg-gray-800/50'
-                        )}
-                      >
-                        <item.icon className="h-4 w-4" />
-                        {item.label}
-                      </Link>
-                    </motion.li>
+                      <item.icon className="h-4 w-4" />
+                      {item.label}
+                    </Link>
                   )
                 })}
-              </ul>
+              </div>
             </motion.div>
           ))}
         </nav>
       </motion.div>
 
+      {/* Overlay */}
+      {isMobile && isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-30"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
       {/* Main content */}
-      <div className="flex-1">
-        {children}
-      </div>
+      <main className={cn(
+        "flex-1 transition-all duration-200 ease-in-out",
+        isOpen ? "md:ml-64" : "ml-0"
+      )}>
+        <div className="min-h-screen">
+          {children}
+        </div>
+      </main>
     </div>
   )
 }

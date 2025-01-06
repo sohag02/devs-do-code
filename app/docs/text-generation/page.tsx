@@ -21,6 +21,30 @@ const completion = await openai.chat.completions.create({
 
 console.log(completion.choices[0].message);`
 
+const pythonGenerateProseCode = `from openai import OpenAI
+client = OpenAI()
+
+completion = client.chat.completions.create(
+  model="gpt-4o",
+  messages=[
+    {"role": "developer", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "Write a haiku about recursion in programming."}
+  ]
+)
+
+print(completion.choices[0].message)`
+
+const curlGenerateProseCode = `curl https://api.devsdo.code/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer $OPENAI_API_KEY" \\
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {"role": "developer", "content": "You are a helpful assistant."},
+      {"role": "user", "content": "Write a haiku about recursion in programming."}
+    ]
+  }'`
+
 const analyzeImageCode = `import OpenAI from "openai";
 const openai = new OpenAI();
 
@@ -43,6 +67,50 @@ const completion = await openai.chat.completions.create({
 });
 
 console.log(completion.choices[0].message);`
+
+const pythonAnalyzeImageCode = `from openai import OpenAI
+client = OpenAI()
+
+completion = client.chat.completions.create(
+  model="gpt-4o",
+  messages=[
+    {
+      "role": "user",
+      "content": [
+        {"type": "text", "text": "What's in this image?"},
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"
+          }
+        }
+      ]
+    }
+  ]
+)
+
+print(completion.choices[0].message)`
+
+const curlAnalyzeImageCode = `curl https://api.devsdo.code/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer $OPENAI_API_KEY" \\
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {"type": "text", "text": "What's in this image?"},
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"
+            }
+          }
+        ]
+      }
+    ]
+  }'`
 
 const generateJSONCode = `import OpenAI from "openai";
 const openai = new OpenAI();
@@ -76,6 +144,62 @@ const completion = await openai.chat.completions.create({
 
 console.log(completion.choices[0].message.content);`
 
+const pythonGenerateJSONCode = `from openai import OpenAI
+client = OpenAI()
+
+completion = client.chat.completions.create(
+  model="gpt-4o-2024-08-06",
+  messages=[
+    {"role": "developer", "content": "You extract email addresses into JSON data."},
+    {"role": "user", "content": "Feeling stuck? Send a message to help@mycompany.com."}
+  ],
+  response_format={
+    "type": "json_schema",
+    "json_schema": {
+      "name": "email_schema",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "description": "The email address that appears in the input",
+            "type": "string"
+          }
+        },
+        "additionalProperties": False
+      }
+    }
+  }
+)
+
+print(completion.choices[0].message.content)`
+
+const curlGenerateJSONCode = `curl https://api.devsdo.code/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer $OPENAI_API_KEY" \\
+  -d '{
+    "model": "gpt-4o-2024-08-06",
+    "messages": [
+      {"role": "developer", "content": "You extract email addresses into JSON data."},
+      {"role": "user", "content": "Feeling stuck? Send a message to help@mycompany.com."}
+    ],
+    "response_format": {
+      "type": "json_schema",
+      "json_schema": {
+        "name": "email_schema",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "description": "The email address that appears in the input",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  }'`
+
 const developerMessageCode = `const response = await openai.chat.completions.create({
   model: "gpt-4o",
   messages: [
@@ -104,6 +228,64 @@ const developerMessageCode = `const response = await openai.chat.completions.cre
   ]
 });`
 
+const pythonDeveloperMessageCode = `from openai import OpenAI
+client = OpenAI()
+
+response = client.chat.completions.create(
+  model="gpt-4o",
+  messages=[
+    {
+      "role": "developer",
+      "content": [
+        {
+          "type": "text",
+          "text": """
+            You are a helpful assistant that answers programming 
+            questions in the style of a southern belle from the 
+            southeast United States.
+          """
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "Are semicolons optional in JavaScript?"
+        }
+      ]
+    }
+  ]
+)`
+
+const curlDeveloperMessageCode = `curl https://api.devsdo.code/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer $OPENAI_API_KEY" \\
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "developer",
+        "content": [
+          {
+            "type": "text",
+            "text": "You are a helpful assistant that answers programming questions in the style of a southern belle from the southeast United States."
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "Are semicolons optional in JavaScript?"
+          }
+        ]
+      }
+    ]
+  }'`
+
 const conversationCode = `const response = await openai.chat.completions.create({
   model: "gpt-4o",
   messages: [
@@ -121,6 +303,78 @@ const conversationCode = `const response = await openai.chat.completions.create(
     }
   ]
 });`
+
+const pythonConversationCode = `from openai import OpenAI
+client = OpenAI()
+
+response = client.chat.completions.create(
+  model="gpt-4o",
+  messages=[
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "knock knock."
+        }
+      ]
+    },
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "Who's there?"
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "Orange."
+        }
+      ]
+    }
+  ]
+)`
+
+const curlConversationCode = `curl https://api.devsdo.code/v1/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer $OPENAI_API_KEY" \\
+  -d '{
+    "model": "gpt-4o",
+    "messages": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "knock knock."
+          }
+        ]
+      },
+      {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Who's there?"
+          }
+        ]
+      },
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": "Orange."
+          }
+        ]
+      }
+    ]
+  }'`
 
 export default function TextGenerationPage() {
   return (
@@ -173,7 +427,9 @@ export default function TextGenerationPage() {
                 <CodeBlock
                   title="Create a human-like response to a prompt"
                   languages={[
-                    { label: "JavaScript", code: generateProseCode }
+                    { label: "JavaScript", code: generateProseCode },
+                    { label: "Python", code: pythonGenerateProseCode },
+                    { label: "cURL", code: curlGenerateProseCode },
                   ]}
                 />
               </div>
@@ -183,7 +439,9 @@ export default function TextGenerationPage() {
                 <CodeBlock
                   title="Describe the contents of an image"
                   languages={[
-                    { label: "JavaScript", code: analyzeImageCode }
+                    { label: "JavaScript", code: analyzeImageCode },
+                    { label: "Python", code: pythonAnalyzeImageCode },
+                    { label: "cURL", code: curlAnalyzeImageCode },
                   ]}
                 />
               </div>
@@ -193,7 +451,9 @@ export default function TextGenerationPage() {
                 <CodeBlock
                   title="Generate JSON data based on a JSON Schema"
                   languages={[
-                    { label: "JavaScript", code: generateJSONCode }
+                    { label: "JavaScript", code: generateJSONCode },
+                    { label: "Python", code: pythonGenerateJSONCode },
+                    { label: "cURL", code: curlGenerateJSONCode },
                   ]}
                 />
               </div>
@@ -240,7 +500,9 @@ export default function TextGenerationPage() {
                 <CodeBlock
                   title="Example of a developer message"
                   languages={[
-                    { label: "JavaScript", code: developerMessageCode }
+                    { label: "JavaScript", code: developerMessageCode },
+                    { label: "Python", code: pythonDeveloperMessageCode },
+                    { label: "cURL", code: curlDeveloperMessageCode },
                   ]}
                 />
               </div>
@@ -253,7 +515,9 @@ export default function TextGenerationPage() {
                 <CodeBlock
                   title="Example of a conversation"
                   languages={[
-                    { label: "JavaScript", code: conversationCode }
+                    { label: "JavaScript", code: conversationCode },
+                    { label: "Python", code: pythonConversationCode },
+                    { label: "cURL", code: curlConversationCode },
                   ]}
                 />
               </div>
