@@ -4,6 +4,7 @@ import MainInterface from "./MainInterface";
 import { fetchModels, fetchVoices } from "../actions";
 import { getMessagesByChatId } from "@/db/queries";
 import ChatInterface from "../components/ChatInterface";
+import MobileNavbar from "../components/mobile-navbar";
 
 export default async function Playground({
   params,
@@ -18,15 +19,20 @@ export default async function Playground({
 
   return (
     <div className="flex text-white">
-      <Sidebar />
+      <div className="hidden md:block">
+          <Sidebar />
+      </div>
       <main className="flex-1 bg-[#121212]">
+        <MobileNavbar models={models} voices={voices} />
         {messages.length > 0 ? (
           <ChatInterface initialMessage={messages} chatId={id} />
         ) : (
           <MainInterface chatId={id} />
         )}
       </main>
-      <SettingsPanel models={models} voices={voices} />
+      <div className="hidden md:block">
+        <SettingsPanel models={models} voices={voices} />
+      </div>
     </div>
   );
 }

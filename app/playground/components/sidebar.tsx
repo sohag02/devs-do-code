@@ -49,7 +49,9 @@ const socialLinks = [
 ];
 
 export function Sidebar() {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(
+    typeof window !== "undefined" && window.innerWidth <= 768
+  );
   const { user, logout } = useSession();
 
   const menuItems = [
@@ -149,9 +151,7 @@ export function Sidebar() {
           <div className="mt-auto pt-4 border-t border-[#2A2A2A] space-y-4">
             {/* Settings */}
             {user && (
-              <div
-                className="flex items-center justify-between px-2 py-2 rounded-lg hover:bg-white/5 transition-colors group"
-              >
+              <div className="flex items-center justify-between px-2 py-2 rounded-lg hover:bg-white/5 transition-colors group">
                 <div className="flex items-center gap-4">
                   <Image
                     src={user.photo}

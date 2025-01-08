@@ -89,7 +89,7 @@ export function PreChatScreen({
   };
 
   return (
-    <div className="flex flex-col h-full p-6">
+    <div className="flex flex-col h-screen p-6">
       <div className="flex-1 flex flex-col items-center justify-center max-w-3xl mx-auto w-full">
         <h1 className="text-4xl font-semibold mb-12 text-white">
           What can I help with?

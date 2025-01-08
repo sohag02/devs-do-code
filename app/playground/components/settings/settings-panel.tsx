@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Button as NextButton, Tab, Tabs, Textarea } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import {
   Brain,
@@ -23,13 +23,15 @@ import { ModelsSection } from "./ModelsSection";
 import { VoiceSection } from "./VoiceSection";
 import SmartPrompt from "./SmartPrompt";
 
-interface SettingsPanelProps {
+export interface SettingsPanelProps {
   models: Model[];
   voices: Voice[];
 }
 
 export function SettingsPanel({ models, voices }: SettingsPanelProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(
+    typeof window !== "undefined" && window.innerWidth <= 768
+  );
   const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const sections = [
@@ -86,17 +88,17 @@ export function SettingsPanel({ models, voices }: SettingsPanelProps) {
 
   return (
     <div
-      className="top-0 right-0 h-screen"
+      className="top-0 right-0 md:h-screen"
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
       <motion.div
-        className="h-full bg-[#121212] border-[#2A2A2A] overflow-hidden"
+        className="md:h-full bg-[#121212] border-[#2A2A2A] overflow-hidden"
         initial={{ width: 48 }}
-        animate={{ width: isExpanded ? 400 : 48 }}
+        animate={{ width: isExpanded ? '100%' : 48 }}
         transition={{ duration: 0.2 }}
       >
-        <div className="flex flex-col h-full w-[400px]">
+        <div className="flex flex-col md:h-full w-[400px] md:w-[400px]">
           {/* Header */}
           <div className="p-6 space-y-6">
             <div className=" items-center justify-between">
