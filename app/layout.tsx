@@ -2,9 +2,9 @@ import { Space_Grotesk, Syne } from "next/font/google"
 import "./globals.css"
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
-import { Providers } from "@/components/providers"
 import { metadata } from "./metadata"
 import { SessionProvider } from "@/context/SessionContext";
+import { Toaster } from "@/components/ui/toaster"
 
 config.autoAddCss = false
 
@@ -30,6 +30,7 @@ export default function RootLayout({
       <body className={grotesk.className}>
         <SessionProvider>
           {children}
+          <Toaster />
         </SessionProvider>
       </body>
     </html>

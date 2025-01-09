@@ -1,97 +1,39 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Check } from 'lucide-react'
-import { useState } from 'react'
-
-const monthlyPricing = {
-  free: {
-    price: '0',
-    features: {
-      tokens: '200k tokens/day',
-      inputTokens: '4k tokens',
-      outputTokens: '4k tokens',
-      images: '20/day',
-      tts: '20/day',
-      ttsChars: '500/request',
-      rpm: '2 RPM',
-      rps: '1 RPS',
-      api: 'Not Available'
-    }
-  },
-  pro: {
-    price: '500',
-    features: {
-      tokens: '1M tokens/day',
-      inputTokens: '32k tokens',
-      outputTokens: '8k tokens',
-      images: '50/day',
-      tts: '50/day',
-      ttsChars: '1k/request',
-      rpm: '3 RPM',
-      rps: '2 RPS',
-      api: 'Available'
-    }
-  },
-  advanced: {
-    price: '1200',
-    features: {
-      tokens: '3M tokens/day',
-      inputTokens: 'Full context window',
-      outputTokens: 'Full output capability',
-      images: '200/day',
-      tts: '500/day',
-      ttsChars: '2k/request',
-      rpm: '4 RPM',
-      rps: '3 RPS',
-      api: 'Available'
-    }
-  },
-  ultimate: {
-    price: '2000',
-    features: {
-      tokens: '5M tokens/day',
-      inputTokens: 'Full context window',
-      outputTokens: 'Full output capability',
-      images: '500/day',
-      tts: '1k/day',
-      ttsChars: '5k/request',
-      rpm: '4+ RPM',
-      rps: '3+ RPS',
-      api: 'Available'
-    }
-  }
-}
-
-const yearlyPricing = {
-  free: {
-    price: '0',
-    features: monthlyPricing.free.features
-  },
-  pro: {
-    price: '390',
-    features: monthlyPricing.pro.features
-  },
-  advanced: {
-    price: '950',
-    features: monthlyPricing.advanced.features
-  },
-  ultimate: {
-    price: '1600',
-    features: monthlyPricing.ultimate.features
-  }
-}
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
+import { useState } from "react";
+// import { createOrder, validateOrder } from "../actions/payments";
+import { usePayment } from "@/hooks/usePayment";
+import { monthlyPricing, yearlyPricing } from "@/config/plans";
+import { useSession } from "@/context/SessionContext";
+import { useRouter } from "next/navigation";
 
 export default function PricingPage() {
-  const [isAnnual, setIsAnnual] = useState(true)
-  const pricing = isAnnual ? yearlyPricing : monthlyPricing
+  const [isAnnual, setIsAnnual] = useState(true);
+  const pricing = isAnnual ? yearlyPricing : monthlyPricing;
+  const router = useRouter();
+  const { user } = useSession();
+  const { handlePayment, isProcessing } = usePayment(
+    user?.name || "",
+    user?.email || "",
+    user?.userid || "",
+  );
+
+  const processPayment = async (amount: number, planId: string) => {
+    if (!user) {
+      router.push("/auth/signin?next=/pricing");
+    } else {
+      await handlePayment(amount, isAnnual ? 'yearly' : 'monthly', planId);
+    }
+  }
 
   return (
     <motion.div
       variants={{
         hidden: { opacity: 0 },
-        visible: { opacity: 1 }
+        visible: { opacity: 1 },
       }}
       initial="hidden"
       animate="visible"
@@ -103,19 +45,24 @@ export default function PricingPage() {
           Unlock the Full Power of AI
         </h1>
         <p className="text-xl text-gray-400 mb-8">
-          Access ChatGPT, Claude, Perplexity, Stable Diffusion, and more—all-in-one
+          Access ChatGPT, Claude, Perplexity, Stable Diffusion, and
+          more—all-in-one
         </p>
 
         {/* Billing Toggle */}
         <div className="flex items-center justify-center gap-4 bg-white/5 backdrop-blur-sm p-1.5 rounded-full w-fit mx-auto">
           <button
-            className={`px-6 py-2 rounded-full text-sm transition-all ${!isAnnual ? 'bg-blue-500 text-white' : 'text-gray-400'}`}
+            className={`px-6 py-2 rounded-full text-sm transition-all ${
+              !isAnnual ? "bg-blue-500 text-white" : "text-gray-400"
+            }`}
             onClick={() => setIsAnnual(false)}
           >
             Monthly
           </button>
           <button
-            className={`px-6 py-2 rounded-full text-sm transition-all ${isAnnual ? 'bg-blue-500 text-white' : 'text-gray-400'}`}
+            className={`px-6 py-2 rounded-full text-sm transition-all ${
+              isAnnual ? "bg-blue-500 text-white" : "text-gray-400"
+            }`}
             onClick={() => setIsAnnual(true)}
           >
             Yearly
@@ -128,7 +75,9 @@ export default function PricingPage() {
         {/* Free */}
         <div className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
           <h3 className="text-2xl font-bold mb-2">Free</h3>
-          <p className="text-gray-400 mb-6">Essential AI tools for everyday use</p>
+          <p className="text-gray-400 mb-6">
+            Essential AI tools for everyday use
+          </p>
           <div className="mb-6">
             <span className="text-4xl font-bold">₹{pricing.free.price}</span>
             <span className="text-gray-400">/mo</span>
@@ -179,12 +128,19 @@ export default function PricingPage() {
         {/* Pro */}
         <div className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
           <h3 className="text-2xl font-bold mb-2">Pro</h3>
-          <p className="text-gray-400 mb-6">Perfect for power users and creators</p>
+          <p className="text-gray-400 mb-6">
+            Perfect for power users and creators
+          </p>
           <div className="mb-6">
             <span className="text-4xl font-bold">₹{pricing.pro.price}</span>
             <span className="text-gray-400">/mo</span>
           </div>
-          <Button className="w-full mb-6" variant="default">
+          <Button
+            className="w-full mb-6"
+            variant="default"
+            disabled={isProcessing}
+            onClick={() => processPayment(Number(pricing.pro.price), 'pro')}
+          >
             Upgrade to Pro
           </Button>
           <ul className="space-y-4">
@@ -230,12 +186,21 @@ export default function PricingPage() {
         {/* Advanced */}
         <div className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
           <h3 className="text-2xl font-bold mb-2">Advanced</h3>
-          <p className="text-gray-400 mb-6">Maximum AI power for professionals</p>
+          <p className="text-gray-400 mb-6">
+            Maximum AI power for professionals
+          </p>
           <div className="mb-6">
-            <span className="text-4xl font-bold">₹{pricing.advanced.price}</span>
+            <span className="text-4xl font-bold">
+              ₹{pricing.advanced.price}
+            </span>
             <span className="text-gray-400">/mo</span>
           </div>
-          <Button className="w-full mb-6" variant="outline">
+          <Button
+            className="w-full mb-6"
+            variant="outline"
+            disabled={isProcessing}
+            onClick={() => processPayment(Number(pricing.advanced.price), 'advanced')}
+          >
             Upgrade to Advanced
           </Button>
           <ul className="space-y-4">
@@ -281,12 +246,21 @@ export default function PricingPage() {
         {/* Ultimate */}
         <div className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
           <h3 className="text-2xl font-bold mb-2">Ultimate</h3>
-          <p className="text-gray-400 mb-6">Maximum AI power for professionals</p>
+          <p className="text-gray-400 mb-6">
+            Maximum AI power for professionals
+          </p>
           <div className="mb-6">
-            <span className="text-4xl font-bold">₹{pricing.ultimate.price}</span>
+            <span className="text-4xl font-bold">
+              ₹{pricing.ultimate.price}
+            </span>
             <span className="text-gray-400">/mo</span>
           </div>
-          <Button className="w-full mb-6" variant="outline">
+          <Button
+            className="w-full mb-6"
+            variant="outline"
+            disabled={isProcessing}
+            onClick={() => processPayment(Number(pricing.ultimate.price), 'ultimate')}
+          >
             Upgrade to Ultimate
           </Button>
           <ul className="space-y-4">
@@ -331,7 +305,7 @@ export default function PricingPage() {
       </motion.div>
 
       {/* Footer */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
@@ -380,5 +354,5 @@ export default function PricingPage() {
         </div>
       </motion.div>
     </motion.div>
-  )
+  );
 }
