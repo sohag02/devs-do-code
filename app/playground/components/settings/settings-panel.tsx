@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Tab, Tabs } from "@nextui-org/react";
 import { motion } from "framer-motion";
@@ -9,7 +8,6 @@ import {
   Briefcase,
   ChevronRight,
   MessageSquare,
-  Plus,
   Settings,
   Sparkles,
   User2,
@@ -21,6 +19,7 @@ import { AdvancedSection } from "./AdvancedSection";
 import { BehaviorSection } from "./BehaviourSection";
 import { ModelsSection } from "./ModelsSection";
 import { VoiceSection } from "./VoiceSection";
+import { ProfileSection } from "./ProfileSection";
 import SmartPrompt from "./SmartPrompt";
 
 export interface SettingsPanelProps {
@@ -40,20 +39,7 @@ export function SettingsPanel({ models, voices }: SettingsPanelProps) {
       title: "Profiles",
       icon: User2,
       description: "Save and switch between your different settings profiles",
-      content: (
-        <div className="space-y-4 text-center text-sm text-gray-400 p-4">
-          <p>
-            No AI profiles available. Create a profile to save your current
-            configuration, including selected models, personality settings,
-            tools, and other preferences. Profiles help you quickly switch
-            between different AI configurations for various tasks.
-          </p>
-          <Button className="w-full" variant="outline">
-            <Plus className="w-4 h-4 mr-2" />
-            Create New Profile
-          </Button>
-        </div>
-      ),
+      content: <ProfileSection />,
     },
     {
       id: "model",
@@ -94,8 +80,8 @@ export function SettingsPanel({ models, voices }: SettingsPanelProps) {
     >
       <motion.div
         className="md:h-full bg-[#121212] border-[#2A2A2A] overflow-hidden"
-        initial={{ width: 48 }}
-        animate={{ width: isExpanded ? '100%' : 48 }}
+        initial={{ width: 0 }}
+        animate={{ width: isExpanded ? '100%' : 56 }}
         transition={{ duration: 0.2 }}
       >
         <div className="flex flex-col md:h-full w-[400px] md:w-[400px]">
