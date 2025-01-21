@@ -1,45 +1,106 @@
-import Link from 'next/link'
-import { motion } from 'framer-motion'
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { Menu, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+} from "@/components/ui/sheet";
+import { useSession } from "@/context/SessionContext";
+
+const items = [
+  { name: "About", href: "/about" },
+  { name: "Docs", href: "/docs" },
+  { name: "Pricing", href: "/pricing" },
+  { name: "Playground", href: "/playground" },
+];
 
 export function Navbar() {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const { user } = useSession();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-blue-500/20 bg-black/50 backdrop-blur">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 flex w-full items-center justify-between">
-          <div className="flex items-center space-x-6">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-bold">
+              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-xl font-bold text-transparent">
                 Devs Do Code
               </span>
             </Link>
-            <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
-              <Link href="/docs" className="text-white hover:text-blue-400 transition-colors">
-                Documentation
-              </Link>
-              <Link href="/pricing" className="text-white hover:text-purple-400 transition-colors">
-                Pricing
-              </Link>
-              <Link href="/about" className="text-white hover:text-pink-400 transition-colors">
-                About
-              </Link>
-            </nav>
           </div>
+          <nav className="hidden md:flex items-center space-x-6">
+            {items.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200 ease-in-out"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
           <div className="flex items-center space-x-4">
-            <Link 
-              href="/login" 
-              className="hidden md:inline-flex items-center justify-center px-4 py-1.5 text-sm font-medium text-white hover:text-blue-400 transition-colors"
-            >
-              Login
-            </Link>
-            <Link 
-              href="/signup" 
-              className="hidden md:inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-1.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
-            >
-              Sign Up
-            </Link>
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="hidden md:inline-flex items-center justify-center rounded-md bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-medium text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-200 ease-in-out"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                href="/auth/signin"
+                className="hidden md:inline-flex items-center justify-center rounded-md bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-medium text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-200 ease-in-out"
+              >
+                Login
+              </Link>
+            )}
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" className="md:hidden" size="icon">
+                  <Menu className="h-5 w-5 text-white" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="w-[300px] sm:w-[400px] bg-gray-900"
+              >
+                <div className="flex items-center justify-end m-2 hover:bg-white/10 hover:cursor-pointer">
+                  <SheetClose asChild>
+                    <X className="h-5 w-5 text-white" />
+                  </SheetClose>
+                </div>
+                <nav className="flex flex-col space-y-4 m-4">
+                  {items.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="text-lg font-medium text-gray-300 hover:text-white transition-colors duration-200 ease-in-out"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                  <Link
+                    href="/signup"
+                    className="inline-flex items-center justify-center rounded-md bg-gradient-to-r from-blue-500 to-purple-500 px-4 py-2 text-sm font-medium text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-200 ease-in-out"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
     </header>
-  )
+  );
 }
