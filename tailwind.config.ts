@@ -2,7 +2,8 @@ import { nextui } from "@nextui-org/react";
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
+    darkMode: ["class"],
+    content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -17,6 +18,7 @@ module.exports = {
       animation: {
         float: "float 3s ease-in-out infinite",
         gradient: "gradient 15s ease infinite",
+        marquee: 'marquee var(--duration) linear infinite',
       },
       keyframes: {
         float: {
@@ -28,6 +30,10 @@ module.exports = {
           "50%": { backgroundPosition: "100% 50%" },
           "100%": { backgroundPosition: "0% 50%" },
         },
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(calc(-100% - var(--gap)))' }
+        }
       },
       colors: {
         border: "hsl(var(--border))",

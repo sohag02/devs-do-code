@@ -3,10 +3,12 @@
 import { motion } from "framer-motion"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism"
+import { Mic } from "lucide-react"
+import Image from "next/image"
 
 const codeExample = `client = OpenAI(
     api_key="YOUR_API_KEY",
-    base_url="https://api.xinhai.com",
+    base_url="https://api.devsdocode.com",
 )
 
 response = client.chat.completions.create(
@@ -49,6 +51,7 @@ export function FeaturesSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column */}
           <div className="space-y-8">
+
             <motion.div 
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 300 }}
@@ -59,8 +62,7 @@ export function FeaturesSection() {
                 <div>
                   <h3 className="text-2xl font-bold mb-2">AI Playground</h3>
                   <p className="text-gray-400">
-                    Test all API models in the sandbox environment before you integrate. 
-                    We provide more than 200 models to integrate into your app.
+                    Chat with multiple AI models in our simple easy to use interface. We provide over 90 AI Models.
                   </p>
                 </div>
               </div>
@@ -141,6 +143,40 @@ export function FeaturesSection() {
                 </motion.div>
               </div>
             </motion.div>
+
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/10"
+            >
+              <div className="flex items-start gap-4 mb-6">
+                <Mic className="w-10 h-10 text-blue-400" />
+                <div>
+                  <h3 className="text-2xl font-bold mb-2">Text To Speech</h3>
+                  <p className="text-gray-400">
+                    Chat with multiple AI models in our simple easy to use interface. We provide over 90 AI Models.
+                  </p>
+                </div>
+              </div>
+              <div className="relative rounded-xl overflow-hidden bg-black/30 p-4">
+                <motion.img 
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  src="https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/667ae6e3785e90ce0f9136ba_pic-chat.webp"
+                  alt="AI Playground interface"
+                  className="w-full h-auto rounded-xl"
+                />
+                <motion.img 
+                  initial={{ y: 50, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  src="https://cdn.prod.website-files.com/65b8f36fa600366bc7cf9a67/667ae79f8eae3e2f367e9b51_Pic%20Toolbar%202.webp"
+                  alt="AI models list"
+                  className="absolute top-4 right-4 w-1/3 rounded-xl shadow-2xl"
+                />
+              </div>
+            </motion.div>
+
           </div>
 
           {/* Right Column */}
@@ -169,7 +205,8 @@ export function FeaturesSection() {
                     margin: 0,
                     borderRadius: '0.75rem',
                     fontSize: '0.8rem',
-                    maxHeight: '300px',
+                    // maxHeight: '300px',
+                    height: 'auto', // Set height to auto
                     overflow: 'auto'
                   }}
                 >
@@ -207,6 +244,31 @@ export function FeaturesSection() {
                   <div className="text-3xl font-bold text-blue-400">SOC 2</div>
                   <div className="text-sm text-gray-400">Compliant</div>
                 </motion.div>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="bg-white/5 backdrop-blur-lg rounded-3xl p-8 border border-white/10"
+            >
+              <div className="flex items-start gap-4 mb-6">
+                <img src="/icons/integration.svg" alt="Simple Integration" className="w-10 h-10" />
+                <div>
+                  <h3 className="text-2xl font-bold mb-2">Image Playground</h3>
+                  <p className="text-gray-400">
+                    Generate AI images with a simple Interface. No coding required.
+                  </p>
+                </div>
+              </div>
+              <div className="bg-black/30 rounded-xl p-4">
+              <motion.img 
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  src="/image.png"
+                  alt="AI Playground interface"
+                  className="w-full h-auto rounded-xl"
+                />
               </div>
             </motion.div>
           </div>

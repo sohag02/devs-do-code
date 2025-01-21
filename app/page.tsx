@@ -1,25 +1,18 @@
 "use client"
 
 import { motion, useScroll, useTransform } from "framer-motion"
-// import { useRef } from "react"
 import { useInView } from "react-intersection-observer"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faRocket, faArrowRight, faPlus, faWindowMaximize } from "@fortawesome/free-solid-svg-icons"
 import { faGithub, faTwitter, faDiscord } from "@fortawesome/free-brands-svg-icons"
-import { MessageSquare, Music, Image, Code, PenTool, BarChart3, Clock, Shield } from "lucide-react"
 import { MouseGradient } from "@/components/mouse-gradient"
-import { AnimatedText } from "@/components/animated-text"
-import { GradientButton } from "@/components/gradient-button"
-import { AnimatedCard } from "@/components/animated-card"
-import { PricingCard } from "@/components/pricing-card"
 import { Navbar } from "@/components/navbar"
-import { ScrollingLogos } from "@/components/scrolling-logos"
-import { ModelsSection } from "@/components/models-section"
-import { FeaturesSection } from "@/components/features-section"
-import { TestimonialsSection } from "@/components/testimonials-section"
-import { CTASection } from "@/components/cta-section"
-import { ModelBadges } from "@/components/model-badges"
-import { fadeIn, staggerContainer, floatAnimation, glowAnimation } from "@/utils/animations"
+import { ScrollingLogos } from "@/components/landing/scrolling-logos"
+import { ModelsSection } from "@/components/landing/models-section"
+import { FeaturesSection } from "@/components/landing/features-section"
+import { TestimonialsSection } from "@/components/landing/testimonials-section"
+import { CTASection } from "@/components/landing/cta-section"
+import { fadeIn, staggerContainer } from "@/utils/animations"
 import Link from "next/link"
 
 export default function Home() {
@@ -27,11 +20,6 @@ export default function Home() {
   const scale = useTransform(scrollY, [0, 300], [1, 0.9])
   const opacity = useTransform(scrollY, [0, 300], [1, 0])
   const y = useTransform(scrollY, [0, 300], [0, 100])
-
-  const [featuresRef, featuresInView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  })
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
@@ -123,90 +111,9 @@ export default function Home() {
         <ModelsSection />
 
         {/* Features Section */}
-        <section className="py-24 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
-              className="space-y-12"
-            >
-              {/* Heading */}
-              <div className="text-center space-y-4">
-                <motion.h2 
-                  variants={fadeIn("up", 0.2)}
-                  className="text-4xl sm:text-5xl font-bold"
-                >
-                  Powerful Features for Modern AI Development
-                </motion.h2>
-                <motion.p 
-                  variants={fadeIn("up", 0.3)}
-                  className="text-xl text-gray-400 max-w-2xl mx-auto"
-                >
-                  Everything you need to build and scale your AI applications
-                </motion.p>
-              </div>
 
-              {/* Features Grid */}
-              <motion.div 
-                variants={fadeIn("up", 0.4)}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-              >
-                {/* AI Playground */}
-                <div className="p-6 rounded-3xl bg-[#0A0A0A] border border-white/5 hover:border-white/10 transition-all duration-300">
-                  <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center mb-6">
-                    <Clock className="w-6 h-6 text-blue-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3">AI Playground</h3>
-                  <p className="text-gray-400 text-sm">
-                    Test all API models in the sandbox environment before you integrate. We provide more than 200 models to integrate into your app.
-                  </p>
-                </div>
-
-                {/* Simple Integration */}
-                <div className="p-6 rounded-3xl bg-[#0A0A0A] border border-white/5 hover:border-white/10 transition-all duration-300">
-                  <div className="w-12 h-12 rounded-full bg-purple-500/10 flex items-center justify-center mb-6">
-                    <Code className="w-6 h-6 text-purple-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3">Simple Integration</h3>
-                  <p className="text-gray-400 text-sm mb-4">
-                    Simply change the endpoints in your existing setup, and you're ready to go.
-                  </p>
-                  <div className="rounded-lg bg-black/60 p-3 font-mono text-xs text-gray-400 overflow-x-auto">
-                    <pre className="whitespace-pre">
-                      <code>{`const response = await fetch('/api/chat', {
-  method: 'POST',
-  body: JSON.stringify({ message })
-});`}</code>
-                    </pre>
-                  </div>
-                </div>
-
-                {/* Infinite Scalability */}
-                <div className="p-6 rounded-3xl bg-[#0A0A0A] border border-white/5 hover:border-white/10 transition-all duration-300">
-                  <div className="w-12 h-12 rounded-full bg-green-500/10 flex items-center justify-center mb-6">
-                    <BarChart3 className="w-6 h-6 text-green-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3">Infinite Scalability</h3>
-                  <p className="text-gray-400 text-sm">
-                    Experience low latency with our AI API, deploy instantly, and surpass rate limits without worry.
-                  </p>
-                </div>
-
-                {/* Enterprise Security */}
-                <div className="p-6 rounded-3xl bg-[#0A0A0A] border border-white/5 hover:border-white/10 transition-all duration-300">
-                  <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
-                    <Shield className="w-6 h-6 text-red-500" />
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3">Enterprise Security</h3>
-                  <p className="text-gray-400 text-sm">
-                    Bank-grade security with SOC2 compliance and end-to-end encryption for your data.
-                  </p>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
+        <FeaturesSection />
+        {/* <BentoFeatures /> */}
 
         <TestimonialsSection />
 
