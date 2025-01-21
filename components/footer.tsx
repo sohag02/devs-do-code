@@ -1,76 +1,175 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Brain } from 'lucide-react'
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { fadeIn, staggerContainer } from "@/lib/animations";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { socials } from "@/config/socials";
 
 const footerLinks = {
   Product: [
-    { name: 'Playground', href: '/playground' },
-    { name: 'Documentation', href: '/docs' },
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'Blog', href: '/blog' },
+    { text: "Playground", href: "/playground" },
+    { text: "Image Generator", href: "/image" },
+    { text: "API", href: "/docs" },
   ],
   Company: [
-    { name: 'About Us', href: '/about' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'Careers', href: '/careers' },
-    { name: 'Press Kit', href: '/press' },
+    { text: "About", href: "/about" },
+    { text: "Contact", href: "/contact" },
   ],
   Legal: [
-    { name: 'Privacy Policy', href: '/legal/privacy' },
-    { name: 'Terms of Service', href: '/legal/terms' },
-    { name: 'Cookie Policy', href: '/legal/cookies' },
-    { name: 'Refund Policy', href: '/legal/refund' },
+    { text: "Terms & Conditions", href: "/terms" },
+    { text: "Refunds & Cancellations", href: "/refunds" },
+    { text: "Privacy Policy", href: "/privacy" },
   ],
-  Social: [
-    { name: 'Twitter', href: 'https://twitter.com/devsdocode' },
-    { name: 'GitHub', href: 'https://github.com/devsdocode' },
-    { name: 'Discord', href: 'https://discord.gg/devsdocode' },
-    { name: 'LinkedIn', href: 'https://linkedin.com/company/devsdocode' },
-  ],
-}
+};
 
 export function Footer() {
   return (
-    <footer className="bg-[#1A1A1A] border-t border-[#2A2A2A]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h3 className="text-white font-semibold mb-4">{category}</h3>
-              <ul className="space-y-2">
-                {links.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-gray-400 hover:text-white transition-colors"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-[#2A2A2A]">
-          <div className="flex items-center gap-2 mb-4 md:mb-0">
+    <footer className="bg-black border-t border-gray-800 py-16 text-white">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Company Info */}
+          <div>
             <motion.div
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.5 }}
+              variants={fadeIn("up", 0)}
+              initial="hidden"
+              animate="visible"
+              className="flex items-center gap-2 mb-6"
             >
-              <Brain className="w-6 h-6 text-white" />
+              <span className="text-2xl font-bold">Devs Do Code</span>
             </motion.div>
-            <span className="text-white font-bold">DEVS DO CODE</span>
+            <motion.p
+              variants={fadeIn("up", 0.2)}
+              initial="hidden"
+              animate="visible"
+              className="text-gray-400"
+            >
+              The ultimate AI chat platform for developers and creators.
+            </motion.p>
+            <motion.div
+              variants={fadeIn("up", 0.4)}
+              initial="hidden"
+              animate="visible"
+              className="flex gap-4 mt-6"
+            >
+              {socials.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <FontAwesomeIcon icon={social.icon} className="w-6 h-6" />
+                </a>
+              ))}
+            </motion.div>
           </div>
 
-          <div className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} Devs Do Code. All rights reserved.
+          {/* Product Links */}
+          <div>
+            <motion.h3
+              variants={fadeIn("up", 0.2)}
+              initial="hidden"
+              animate="visible"
+              className="font-bold mb-4"
+            >
+              Product
+            </motion.h3>
+            <motion.ul
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="space-y-2"
+            >
+              {footerLinks.Product.map((item, index) => (
+                <motion.li
+                  key={item.text}
+                  variants={fadeIn("up", 0.3 + index * 0.1)}
+                >
+                  <Link
+                    href={item.href}
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    {item.text}
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </div>
+
+          {/* Company Links */}
+          <div>
+            <motion.h3
+              variants={fadeIn("up", 0.2)}
+              initial="hidden"
+              animate="visible"
+              className="font-bold mb-4"
+            >
+              Company
+            </motion.h3>
+            <motion.ul
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="space-y-2"
+            >
+              {footerLinks.Company.map((item, index) => (
+                <motion.li
+                  key={item.text}
+                  variants={fadeIn("up", 0.3 + index * 0.1)}
+                >
+                  <Link
+                    href={item.href}
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    {item.text}
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </div>
+
+          {/* Legal Links */}
+          <div>
+            <motion.h3
+              variants={fadeIn("up", 0.2)}
+              initial="hidden"
+              animate="visible"
+              className="font-bold mb-4"
+            >
+              Legal
+            </motion.h3>
+            <motion.ul
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="space-y-2"
+            >
+              {footerLinks.Legal.map((item, index) => (
+                <motion.li
+                  key={item.text}
+                  variants={fadeIn("up", 0.3 + index * 0.1)}
+                >
+                  <Link
+                    href={item.href}
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    {item.text}
+                  </Link>
+                </motion.li>
+              ))}
+            </motion.ul>
           </div>
         </div>
+
+        <motion.div
+          variants={fadeIn("up", 0.6)}
+          initial="hidden"
+          animate="visible"
+          className="mt-16 pt-8 border-t border-gray-800 text-center text-gray-400"
+        >
+          <p> 2024 Devs Do Code. All rights reserved.</p>
+        </motion.div>
       </div>
     </footer>
-  )
+  );
 }

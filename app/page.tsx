@@ -1,10 +1,8 @@
 "use client"
 
 import { motion, useScroll, useTransform } from "framer-motion"
-import { useInView } from "react-intersection-observer"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faRocket, faArrowRight, faPlus, faWindowMaximize } from "@fortawesome/free-solid-svg-icons"
-import { faGithub, faTwitter, faDiscord } from "@fortawesome/free-brands-svg-icons"
 import { MouseGradient } from "@/components/mouse-gradient"
 import { Navbar } from "@/components/navbar"
 import { ScrollingLogos } from "@/components/landing/scrolling-logos"
@@ -14,6 +12,7 @@ import { TestimonialsSection } from "@/components/landing/testimonials-section"
 import { CTASection } from "@/components/landing/cta-section"
 import { fadeIn, staggerContainer } from "@/utils/animations"
 import Link from "next/link"
+import { Footer } from "@/components/footer"
 
 export default function Home() {
   const { scrollY } = useScroll()
@@ -122,155 +121,7 @@ export default function Home() {
         <div className="pd-up-1"></div>
 
         {/* Footer */}
-        <footer className="bg-black border-t border-gray-800 py-16">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              {/* Company Info */}
-              <div>
-                <motion.div
-                  variants={fadeIn("up", 0)}
-                  initial="hidden"
-                  animate="visible"
-                  className="flex items-center gap-2 mb-6"
-                >
-                  <span className="text-2xl font-bold">Devs Do Code</span>
-                </motion.div>
-                <motion.p
-                  variants={fadeIn("up", 0.2)}
-                  initial="hidden"
-                  animate="visible"
-                  className="text-gray-400"
-                >
-                  The ultimate AI chat platform for developers and creators.
-                </motion.p>
-                <motion.div
-                  variants={fadeIn("up", 0.4)}
-                  initial="hidden"
-                  animate="visible"
-                  className="flex gap-4 mt-6"
-                >
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    <FontAwesomeIcon icon={faGithub} className="w-6 h-6" />
-                  </a>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    <FontAwesomeIcon icon={faTwitter} className="w-6 h-6" />
-                  </a>
-                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                    <FontAwesomeIcon icon={faDiscord} className="w-6 h-6" />
-                  </a>
-                </motion.div>
-              </div>
-
-              {/* Product Links */}
-              <div>
-                <motion.h3
-                  variants={fadeIn("up", 0.2)}
-                  initial="hidden"
-                  animate="visible"
-                  className="font-bold mb-4"
-                >
-                  Product
-                </motion.h3>
-                <motion.ul
-                  variants={staggerContainer}
-                  initial="hidden"
-                  animate="visible"
-                  className="space-y-2"
-                >
-                  {[
-                    { text: "Features", href: "/docs" },
-                    { text: "Pricing", href: "/pricing" },
-                    { text: "API", href: "/docs/api" }
-                  ].map((item, index) => (
-                    <motion.li
-                      key={item.text}
-                      variants={fadeIn("up", 0.3 + index * 0.1)}
-                    >
-                      <Link href={item.href} className="text-gray-400 hover:text-white transition-colors">
-                        {item.text}
-                      </Link>
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              </div>
-
-              {/* Company Links */}
-              <div>
-                <motion.h3
-                  variants={fadeIn("up", 0.2)}
-                  initial="hidden"
-                  animate="visible"
-                  className="font-bold mb-4"
-                >
-                  Company
-                </motion.h3>
-                <motion.ul
-                  variants={staggerContainer}
-                  initial="hidden"
-                  animate="visible"
-                  className="space-y-2"
-                >
-                  {[
-                    { text: "About", href: "/about" },
-                    { text: "Careers", href: "/careers" },
-                    { text: "Contact", href: "/contact" }
-                  ].map((item, index) => (
-                    <motion.li
-                      key={item.text}
-                      variants={fadeIn("up", 0.3 + index * 0.1)}
-                    >
-                      <Link href={item.href} className="text-gray-400 hover:text-white transition-colors">
-                        {item.text}
-                      </Link>
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              </div>
-
-              {/* Legal Links */}
-              <div>
-                <motion.h3
-                  variants={fadeIn("up", 0.2)}
-                  initial="hidden"
-                  animate="visible"
-                  className="font-bold mb-4"
-                >
-                  Legal
-                </motion.h3>
-                <motion.ul
-                  variants={staggerContainer}
-                  initial="hidden"
-                  animate="visible"
-                  className="space-y-2"
-                >
-                  {[
-                    { text: "Terms & Conditions", href: "/terms" },
-                    { text: "Refunds & Cancellations", href: "/refunds" },
-                    { text: "Privacy Policy", href: "/privacy" }
-                  ].map((item, index) => (
-                    <motion.li
-                      key={item.text}
-                      variants={fadeIn("up", 0.3 + index * 0.1)}
-                    >
-                      <Link href={item.href} className="text-gray-400 hover:text-white transition-colors">
-                        {item.text}
-                      </Link>
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              </div>
-            </div>
-
-            <motion.div
-              variants={fadeIn("up", 0.6)}
-              initial="hidden"
-              animate="visible"
-              className="mt-16 pt-8 border-t border-gray-800 text-center text-gray-400"
-            >
-              <p> 2024 Devs Do Code. All rights reserved.</p>
-            </motion.div>
-          </div>
-        </footer>
+        <Footer />
       </MouseGradient>
     </div>
   )
