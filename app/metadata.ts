@@ -3,4 +3,7 @@ import { Metadata } from "next"
 export const metadata: Metadata = {
   title: "Devs Do Code - Chat with Multiple AI Models",
   description: "Access GPT-4, Claude, and Gemini Pro all in one place. Compare responses and choose the best AI for your needs.",
+  other: {
+    'google-site-verification': 'IOK9F6S0dTgS0VsNrmJ1U4-D4eefejq4T4Ek1szdTl8',
+  }
 }
