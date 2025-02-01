@@ -37,7 +37,11 @@ function SignIn() {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true)
-      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/googlelogin?next=${next_url}`
+      const params = new URLSearchParams(window.location.search);
+      if (next_url) {
+        params.set('next', next_url);
+      }
+      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google/login?${params.toString()}`
     } catch (error) {
       console.error('Google sign in error:', error)
     } finally {
@@ -48,7 +52,11 @@ function SignIn() {
   const handleGitHubSignIn = async () => {
     try {
       setIsLoading(true)
-      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/githublogin?next=${next_url}`
+      const params = new URLSearchParams(window.location.search);
+      if (next_url) {
+        params.set('next', next_url);
+      }
+      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/github/login?${params.toString()}`
     } catch (error) {
       console.error('GitHub sign in error:', error)
     } finally {
