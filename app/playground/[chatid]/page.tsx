@@ -5,6 +5,8 @@ import { fetchModels, fetchVoices } from "../actions";
 import { getMessagesByChatId } from "@/db/queries";
 import ChatInterface from "../components/ChatInterface";
 import MobileNavbar from "../components/mobile-navbar";
+import AdBanner from "@/components/AdBanner";
+import AdsterraNativeAd from "@/components/Ad";
 
 export default async function Playground({
   params,
@@ -25,7 +27,13 @@ export default async function Playground({
       <main className="flex-1 bg-[#121212]">
         <MobileNavbar models={models} voices={voices} />
         {messages.length > 0 ? (
-          <ChatInterface initialMessage={messages} chatId={id} />
+          <div className="grid grid-cols-4">
+            <AdsterraNativeAd /> 
+            <div className="col-span-2">
+              <ChatInterface initialMessage={messages} chatId={id} />
+            </div>
+            <AdBanner />
+          </div>
         ) : (
           <MainInterface chatId={id} />
         )}
