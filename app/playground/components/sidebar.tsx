@@ -23,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { getAvatar } from "@/lib/utils";
 
 export const menuItemVariants = {
   hidden: { opacity: 0, x: -20 },
@@ -153,13 +154,23 @@ export function Sidebar() {
             {user && (
               <div className="flex items-center justify-between px-2 py-2 rounded-lg hover:bg-white/5 transition-colors group">
                 <div className="flex items-center gap-4">
-                  <Image
-                    src={user.photo}
-                    alt="User Profile"
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
+                  {user.picture ? (
+                    <Image
+                      src={user.picture}
+                      alt="User Profile"
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <Image
+                      src={getAvatar(user.name)}
+                      alt="User Profile"
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                  )}
                   <motion.span
                     className="text-gray-300 text-sm whitespace-nowrap group-hover:text-white transition-colors"
                     initial={{ opacity: 0 }}
@@ -169,8 +180,7 @@ export function Sidebar() {
                     <div className="flex flex-col items-start gap-1">
                       <span className="font-bold">{user.name}</span>
                       <span>
-                        {user.plan_id.charAt(0).toUpperCase() +
-                          user.plan_id.slice(1)}
+                        {user.plan.charAt(0).toUpperCase() + user.plan.slice(1)}
                       </span>
                     </div>
                   </motion.span>

@@ -10,11 +10,16 @@ import {
 import { fetchUser } from "@/lib/fetchUser";
 
 interface User {
-  userid: string;
+  id: string;
   name: string;
   email: string;
-  photo: string;
-  plan_id: string;
+  provider: string;
+  plan: string;
+  picture: string | null;
+  totalInputTokens: number;
+  totalOutputTokens: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface SessionContextType {
@@ -32,7 +37,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const loadUser = async () => {
       const userData = await fetchUser();
-      setUser(userData.data.user);
+      setUser(userData);
       setLoading(false);
     };
 
@@ -41,7 +46,7 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/logout`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/logout`, {
         method: "GET",
         credentials: "include",
       });

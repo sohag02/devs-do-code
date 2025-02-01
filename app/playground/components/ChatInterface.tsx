@@ -94,7 +94,7 @@ export default function Chat({
   } = useChat({
     onFinish: () => {
       if (messages.length < 2) {
-        mutate(`/api/history?id=${user?.userid}`);
+        mutate(`/api/history?id=${user?.id}`);
       }
     },
     initialMessages: initialMessage?.map((msg) => ({
@@ -128,7 +128,7 @@ export default function Chat({
             topK: topK,
             customInstructions: customInstructions,
             chatId: chatId,
-            userId: user?.userid,
+            userId: user?.id,
           },
         }
       );
@@ -144,7 +144,7 @@ export default function Chat({
     temperature,
     topK,
     topP,
-    user?.userid,
+    user?.id,
   ]);
 
   useEffect(() => {
@@ -177,7 +177,7 @@ export default function Chat({
         topK: topK,
         customInstructions: customInstructions,
         chatId: chatId,
-        userId: user?.userid,
+        userId: user?.id,
       },
     });
   };

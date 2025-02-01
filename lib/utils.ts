@@ -24,3 +24,7 @@ export async function getUserIDFromToken(token: string) {
     return null; // Return null if the token verification fails
   }
 }
+
+export function getAvatar(name: string) {
+  return `https://ui-avatars.com/api/?name=${name}&background=random`
+}
