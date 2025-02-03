@@ -8,7 +8,7 @@ export async function createChat(userId: string, title: string, chatId: string) 
     id: chatId,
     userId: userId,
     title: title,
-  })
+  }).onConflictDoNothing();
 }
 
 export async function fetchChats(userId: string) {

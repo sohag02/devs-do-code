@@ -60,7 +60,7 @@ export function ChatHistory({ isExpanded }: { isExpanded: boolean }) {
     data: chats,
     isLoading,
     mutate,
-  } = useSWR(`/api/history?id=${user?.userid}`, fetcher);
+  } = useSWR(`/api/history?id=${user?.id}`, fetcher);
 
   if (isLoading) {
     return (

@@ -1,10 +1,11 @@
 import { createChat } from "@/app/playground/actions";
 import { createOpenAI, OpenAIProvider } from "@ai-sdk/openai";
 import {
-  generateText,
   streamText,
   type CoreMessage,
   convertToCoreMessages,
+  createDataStreamResponse,
+  APICallError,
 } from "ai";
 import { saveMessage, getChatById } from "@/db/queries";
 import { type TextPart } from "ai";
@@ -20,7 +21,7 @@ let openaiInstance: OpenAIProvider | null = null;
 const getOpenAIClient = () => {
   if (!openaiInstance) {
     openaiInstance = createOpenAI({
-      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1`,
+      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1`,
       compatibility: "compatible",
       fetch: async (url: RequestInfo | URL, init?: RequestInit) => {
         const cookieStore = cookies();
@@ -64,17 +65,29 @@ export async function POST(req: Request) {
   }
 
   const chat = await getChatById({ id: chatId });
+  console.log('chat', chat)
 
   if (!chat) {
-    const { text: title } = await generateText({
-      model: openai("claude-3-5-sonnet"),
-      system: `\n
-      - you will generate a short title based on the first message a user begins a conversation with
-      - ensure it is not more than 80 characters long and 3 words
-      - the title should be a summary of the user's message
-      - do not use quotes or colons`,
-      prompt: JSON.stringify(messages[0]),
-    });
+    let title = "New Chat";
+    try {
+      const cookieStore = cookies();
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/chat-title`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie : cookieStore.toString(),
+        },
+        body: JSON.stringify({
+          message: messages[0].content,
+        }),
+      })
+      const data = await res.json();
+      console.log('data', data)
+      title = data.title ?? title;
+    } catch (error) {
+      console.error("Error generating title", error);
+    }
     await createChat(userId, title, chatId);
   }
 
@@ -84,30 +97,32 @@ export async function POST(req: Request) {
     chatId: chatId,
   });
 
-  const result = streamText({
-    model: openai(model),
-    messages,
-    temperature: temperature,
-    topP: topP,
-    system: customInstructions,
-    onFinish: async (text) => {
-      const content = text.response.messages[0].content[0] as TextPart;
-      await saveMessage({
-        role: "assistant",
-        content: content.text,
-        chatId: chatId,
+  return createDataStreamResponse({
+    execute: (dataStream) => {
+      const result = streamText({
+        model: openai(model),
+        messages,
+        temperature: temperature,
+        topP: topP,
+        system: customInstructions,
+        onFinish: async (text) => {
+          const content = text.response.messages[0].content[0] as TextPart;
+          await saveMessage({
+            role: "assistant",
+            content: content.text,
+            chatId: chatId,
+          });
+        },
+        maxRetries: 0,
       });
+
+      result.mergeIntoDataStream(dataStream);
     },
-  });
-
-  return result.toDataStreamResponse({
-    getErrorMessage: (error) => {
-      if (error == null) {
-        return "unknown error";
-      }
-
-      if (typeof error === "string") {
-        return error;
+    onError: error => {
+      console.error("Error streaming response:", error);
+      if (error instanceof APICallError) {
+        const body = error.responseBody as string;
+        return JSON.parse(body).message;
       }
 
       if (error instanceof Error) {
@@ -115,6 +130,6 @@ export async function POST(req: Request) {
       }
 
       return JSON.stringify(error);
-    },
-  });
+    }
+  })
 }

@@ -279,7 +279,7 @@ export default function Chat({
             {error && (
               <div className="flex items-center justify-center space-x-2 text-red-400 mb-4">
                 <div className="flex flex-col items-center justify-center space-y-2">
-                  <div>An error occurred : {error.message}</div>
+                  <div>{error.message}</div>
                   <Button
                     type="button"
                     variant={"destructive"}
