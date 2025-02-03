@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -10,7 +10,14 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useSession } from "@/context/SessionContext";
+import UserIcon from "@/components/user-icon";
 
 const items = [
   { name: "About", href: "/about" },
@@ -21,7 +28,7 @@ const items = [
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
-  const { user } = useSession();
+  const { user, logout } = useSession();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-blue-500/20 bg-black/50 backdrop-blur">
@@ -61,6 +68,21 @@ export function Navbar() {
                 Login
               </Link>
             )}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size={"icon"} className="bg-transparent hover:bg-transparent">
+                  <UserIcon />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-24 bg-gray-800">
+                <DropdownMenuItem
+                  onClick={logout}
+                  className="hover:bg-gray-700 text-white hover:cursor-pointer"
+                >
+                  <LogOut className="h-5 w-5" /> Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" className="md:hidden" size="icon">

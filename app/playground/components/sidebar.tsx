@@ -15,7 +15,6 @@ import {
 import Link from "next/link";
 import { useSession } from "@/context/SessionContext";
 import { ChatHistory } from "./chat-history";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -23,7 +22,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getAvatar } from "@/lib/utils";
+import UserIcon from "@/components/user-icon";
 
 export const menuItemVariants = {
   hidden: { opacity: 0, x: -20 },
@@ -154,23 +153,7 @@ export function Sidebar() {
             {user && (
               <div className="flex items-center justify-between px-2 py-2 rounded-lg hover:bg-white/5 transition-colors group">
                 <div className="flex items-center gap-4">
-                  {user.picture ? (
-                    <Image
-                      src={user.picture}
-                      alt="User Profile"
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <Image
-                      src={getAvatar(user.name)}
-                      alt="User Profile"
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                  )}
+                  <UserIcon />
                   <motion.span
                     className="text-gray-300 text-sm whitespace-nowrap group-hover:text-white transition-colors"
                     initial={{ opacity: 0 }}
