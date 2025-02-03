@@ -18,7 +18,7 @@ export default function PricingPage() {
   const { handlePayment, isProcessing } = usePayment(
     user?.name || "",
     user?.email || "",
-    user?.userid || "",
+    user?.id || "",
   );
 
   const processPayment = async (amount: number, planId: string) => {
