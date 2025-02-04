@@ -24,6 +24,7 @@ const items = [
   { name: "Docs", href: "/docs" },
   { name: "Pricing", href: "/pricing" },
   { name: "Playground", href: "/playground" },
+  { name: "Image Generation", href: "/image" },
 ];
 
 export function Navbar() {
