@@ -10,42 +10,43 @@ import {
 import { saveMessage, getChatById } from "@/db/queries";
 import { type TextPart } from "ai";
 import { cookies } from "next/headers";
+import { openaiInstance as openai } from "@/lib/openai";
 
 function getMostRecentUserMessage(messages: Array<CoreMessage>) {
   const userMessages = messages.filter((message) => message.role === "user");
   return userMessages.at(-1);
 }
 
-let openaiInstance: OpenAIProvider | null = null;
+// let openaiInstance: OpenAIProvider | null = null;
 
-const getOpenAIClient = () => {
-  if (!openaiInstance) {
-    openaiInstance = createOpenAI({
-      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1`,
-      compatibility: "compatible",
-      fetch: async (url: RequestInfo | URL, init?: RequestInit) => {
-        const cookieStore = cookies();
-        const headers = { ...init?.headers } as Record<string, string>;
-        delete headers["Authorization"];
+// const getOpenAIClient = () => {
+//   if (!openaiInstance) {
+//     openaiInstance = createOpenAI({
+//       baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1`,
+//       compatibility: "compatible",
+//       fetch: async (url: RequestInfo | URL, init?: RequestInit) => {
+//         const cookieStore = cookies();
+//         const headers = { ...init?.headers } as Record<string, string>;
+//         delete headers["Authorization"];
 
-        return fetch(url, {
-          ...init,
-          headers: {
-            ...headers,
-            Cookie: cookieStore.toString(),
-          },
-        });
-      },
-    });
-  }
-  return openaiInstance;
-};
+//         return fetch(url, {
+//           ...init,
+//           headers: {
+//             ...headers,
+//             Cookie: cookieStore.toString(),
+//           },
+//         });
+//       },
+//     });
+//   }
+//   return openaiInstance;
+// };
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  const openai = getOpenAIClient();
+  // const openai = getOpenAIClient();
 
   const {
     messages,
