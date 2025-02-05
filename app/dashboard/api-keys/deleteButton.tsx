@@ -12,10 +12,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Trash2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export function DeleteButton({ id }: { id: string }) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
 
   const handleDelete = async () => {
     setIsLoading(true);
@@ -23,6 +25,11 @@ export function DeleteButton({ id }: { id: string }) {
       await deleteAPIKey(id);
     } catch (error) {
       console.error("Failed to delete API key:", error);
+      toast.toast({
+        title: "Failed to delete API key",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }

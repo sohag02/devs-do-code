@@ -15,11 +15,13 @@ import { Label } from "@/components/ui/label";
 import { createAPIKey } from "@/app/actions/apikey";
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
+import { useToast } from "@/hooks/use-toast";
 
-export function CreateApiKeyDialog() {
+export function CreateApiKeyDialog({disabled} : {disabled?: boolean}) {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
 
   const handleCreateKey = async () => {
     if (name.trim() === "") return;
@@ -28,6 +30,11 @@ export function CreateApiKeyDialog() {
     try {
       await createAPIKey(name);
     } catch (error) {
+      toast.toast({
+        title: "Failed to create API key",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
       console.error("Failed to create API key:", error);
     } finally {
       setIsLoading(false);
@@ -40,7 +47,7 @@ export function CreateApiKeyDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button disabled={false} className="flex items-center">
+        <Button disabled={disabled} className="flex items-center">
           <Plus className="w-4 h-4 mr-2" />
           Create API Key
         </Button>

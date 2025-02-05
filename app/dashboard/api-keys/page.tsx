@@ -2,9 +2,11 @@ import { Suspense } from "react";
 import { getAPIKeys } from "@/app/actions/apikey";
 import { ApiKeysTable } from "./api-keys-table";
 import { CreateApiKeyDialog } from "./api-key-dialog";
+import AlertComponent from "@/components/ui/AlertComponent";
 
 export default async function ApiKeysPage() {
   const apiKeys = await getAPIKeys();
+  const limitReached = apiKeys.length >= 5;
   return (
     <>
       <div className="flex justify-between items-center mb-8 max-w-3xl">
@@ -16,8 +18,19 @@ export default async function ApiKeysPage() {
             Manage your API keys for accessing the API
           </p>
         </div>
-        <CreateApiKeyDialog />
+        <CreateApiKeyDialog disabled={limitReached} />
       </div>
+
+      {limitReached && (
+        <div className="flex justify-center my-2 max-w-3xl">
+          <AlertComponent
+            title="API Keys Limit Reached"
+            description="You can have a maximum of 5 API keys."
+            color="warning"
+            classname="my-20"
+          />
+        </div>
+      )}
 
       <div className="rounded-lg  overflow-hidden">
         <Suspense fallback={<TableSkeleton />}>

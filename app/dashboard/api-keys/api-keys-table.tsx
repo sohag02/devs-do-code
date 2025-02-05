@@ -11,15 +11,7 @@ import {
 import { DeleteButton } from "./deleteButton";
 import CopyButton from "@/components/copy-button";
 import DateComponent from "./date";
-
-interface ApiKey {
-  id: string;
-  key: string;
-  user_id: string;
-  key_name: string | null;
-  created_at: string;
-  last_used_at: string | null;
-}
+import { type ApiKey } from "@/app/actions/apikey";
 
 export function ApiKeysTable({ apiKeys }: { apiKeys: ApiKey[] }) {
   return (
@@ -35,7 +27,7 @@ export function ApiKeysTable({ apiKeys }: { apiKeys: ApiKey[] }) {
           {apiKeys.map((apiKey) => (
             <TableRow key={apiKey.id} className="border-white hover:bg-white/5 transition-colors rounded-lg">
               <TableCell className="font-medium">
-                {apiKey.key_name ?? "Secret Key"}
+                {apiKey.keyName ?? "Secret Key"}
               </TableCell>
               <TableCell>
                 <div className="bg-black/40 backdrop-blur-sm border border-white/10 px-3 py-1.5 rounded-md flex items-center justify-between group">
@@ -46,10 +38,10 @@ export function ApiKeysTable({ apiKeys }: { apiKeys: ApiKey[] }) {
                 </div>
               </TableCell>
               <TableCell className="text-gray-400">
-                <DateComponent dateString={apiKey.created_at} />
+                <DateComponent dateString={apiKey.createdAt as unknown as string} />
               </TableCell>
               <TableCell className="text-center">
-                <DeleteButton id={apiKey.id} />
+                <DeleteButton id={apiKey.key} />
               </TableCell>
             </TableRow>
           ))}
