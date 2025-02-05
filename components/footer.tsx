@@ -15,6 +15,7 @@ const footerLinks = {
   Company: [
     { text: "About", href: "/about" },
     { text: "Contact", href: "/contact" },
+    { text: "Home", href: "https://home.devsdocode.com" },
   ],
   Legal: [
     { text: "Terms & Conditions", href: "/terms" },
