@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getUserIDFromToken } from "./lib/utils";
 
-const protectedRoutes = ["/playground", "/dashboard"];
+const protectedRoutes = ["/playground", "/dashboard", "/image"];
 
 function redirectToLogin(url: URL, nextPath: string) {
   const searchParams = new URLSearchParams();
