@@ -24,6 +24,17 @@ export const Messages = pgTable("messages", {
     .notNull(),
 });
 
+export const FavoriteVoices = pgTable("favorite_voices", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").notNull(),
+  voiceId: varchar("voice_id").notNull(),
+  createdAt: timestamp("created_at", { mode: 'string' })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+// RELATIONS --------------
+
 export const ChatsRelations = relations(Chats, ({ many }) => ({
   messages: many(Messages),
 }));
