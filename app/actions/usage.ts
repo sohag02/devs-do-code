@@ -75,6 +75,7 @@ export async function getUsage() {
 
   if (res.ok) {
     const data = await res.json();
+	console.log(JSON.stringify(data, null, 2));
     return data.data as UsageData;
   } else {
     throw new Error("Failed to fetch usage data " + res.status);

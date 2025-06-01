@@ -13,8 +13,25 @@ export default async function Playground({
 }: {
   params: { chatid: string };
 }) {
-  const models = await fetchModels();
-  const voices = await fetchVoices();
+  // const models = await fetchModels();
+  // const voices = await fetchVoices();
+  // Dummy data
+  const models = [
+    {
+      id: "stable_diffusion",
+      label: "Stable Diffusion",
+    },
+  ];
+  const voices = [
+    {
+      voice_id: "en-US-JennyNeural",
+      voice_name: "Jenny",
+    },
+    {
+      voice_id: "en-US-AriaNeural",
+      voice_name: "Aria",
+    },
+  ];
   const id = params.chatid;
 
   const messages = await getMessagesByChatId({ id });

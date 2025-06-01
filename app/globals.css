@@ -164,6 +164,8 @@ html {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-2: 340 75% 55%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
   }
   .dark {
     --sidebar-background: 240 5.9% 10%;
